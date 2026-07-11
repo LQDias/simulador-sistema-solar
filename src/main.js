@@ -2,7 +2,6 @@ import './style.css';
 import { Simulador2D } from './sim-2d/canvas2d.js';
 import * as THREE from 'three';
 
-// --- SELEÇÃO DE ELEMENTOS DA INTERFACE ---
 const container3D = document.getElementById('canvas-3d-container');
 const sliderDia = document.getElementById('slider-dia');
 const btnPlay = document.getElementById('btn-play');
@@ -10,6 +9,7 @@ const txtData = document.getElementById('txt-data');
 const txtNorte = document.getElementById('txt-norte');
 const txtSul = document.getElementById('txt-sul');
 const btnShortcuts = document.querySelectorAll('.btn-shortcut');
+const txtExplicao = document.getElementById('txt-explicao');
 
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x050505);
@@ -74,21 +74,23 @@ function atualizarPosicaoTerra(dia) {
 
 // Função para converter dia do ano em data e estação
 function atualizarTextosInterface(dia) {
-    // Lógica simplificada. Alterar para objetos Date.
     const dataBase = new Date(2023, 0, 1);
     dataBase.setDate(dia + 1);
     const opcoes = { day: 'numeric', month: 'long' };
     txtData.innerText = dataBase.toLocaleDateString('pt-BR', opcoes);
 
-    // Lógica de estação baseada nos Solstícios/Equinócios
     if (dia >= 80 && dia < 172) {
         txtNorte.innerText = "Primavera"; txtSul.innerText = "Outono";
+        txtExplicao.innerText = "O Hemisfério Norte está se inclinando gradualmente em direção ao Sol. Os dias começam a ficar mais longos por lá.";
     } else if (dia >= 172 && dia < 264) {
         txtNorte.innerText = "Verão"; txtSul.innerText = "Inverno";
+        txtExplicao.innerText = "Solstício de Junho. O Polo Norte está no seu ápice de inclinação para o Sol. É o dia mais longo do ano no Norte (Sol da Meia-Noite) e a noite mais longa no Sul.";
     } else if (dia >= 264 && dia < 355) {
         txtNorte.innerText = "Outono"; txtSul.innerText = "Primavera";
+        txtExplicao.innerText = "O Hemisfério Sul começa a receber mais luz direta. As temperaturas começam a subir abaixo da linha do Equador.";
     } else {
         txtNorte.innerText = "Inverno"; txtSul.innerText = "Verão";
+        txtExplicao.innerText = "Solstício de Dezembro. O Polo Sul está totalmente voltado para o Sol. Verão escaldante no Sul com dias longos, e frio com noites longas no Norte.";
     }
 }
 

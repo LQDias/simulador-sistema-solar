@@ -12,7 +12,7 @@ export class Simulador2D {
 
     resize() {
         this.width = this.container.clientWidth;
-        this.height = 320;
+        this.height = this.container.clientHeight || 200; 
         this.canvas.width = this.width;
         this.canvas.height = this.height;
     }
