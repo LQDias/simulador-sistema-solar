@@ -1,4 +1,5 @@
 import './style.css';
+import { Simulador2D } from './sim-2d/canvas2d.js';
 import * as THREE from 'three';
 
 // --- SELEÇÃO DE ELEMENTOS DA INTERFACE ---
@@ -55,6 +56,9 @@ let diaAtual = parseInt(sliderDia.value);
 let estaAnimando = false;
 let rotationSpeed = 0.02;
 
+// --- SIMULADOR 2D ---
+const simulador2D = new Simulador2D('canvas-2d-container');
+
 // --- FUNÇÕES DE ATUALIZAÇÃO ---
 
 function atualizarPosicaoTerra(dia) {
@@ -65,6 +69,7 @@ function atualizarPosicaoTerra(dia) {
     
     // Atualiza o texto da interface
     atualizarTextosInterface(dia);
+    simulador2D.desenhar(dia);
 }
 
 // Função para converter dia do ano em data e estação
