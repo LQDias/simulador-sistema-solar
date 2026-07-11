@@ -12,7 +12,7 @@ export class Simulador2D {
 
     resize() {
         this.width = this.container.clientWidth;
-        this.height = this.container.clientHeight || 250;
+        this.height = 320;
         this.canvas.width = this.width;
         this.canvas.height = this.height;
     }
@@ -25,7 +25,7 @@ export class Simulador2D {
 
         ctx.clearRect(0, 0, this.width, this.height);
 
-        ctx.strokeStyle = 'rgba(255, 215, 0, 0.2)';
+        ctx.strokeStyle = 'rgba(255, 215, 0, 0.15)';
         ctx.lineWidth = 2;
         for (let i = -raioTerra; i <= raioTerra; i += 20) {
             ctx.beginPath();
@@ -34,14 +34,16 @@ export class Simulador2D {
             ctx.stroke();
         }
 
+        // Ângulo da órbita (0 no equinócio de março)
         const anguloOrbita = ((dia - 80) / 365) * Math.PI * 2;
-        const inclinacaoEixo = 23.5 * (Math.PI / 180);
+        const inclinacaoMaxima = 23.5 * (Math.PI / 180);
         
-        const fatorLuz = Math.sin(anguloOrbita) * inclinacaoEixo;
+        // No solstício de junho (PI/2), inclina o Norte para a esquerda
+        const inclinacaoVisualEixo = -Math.sin(anguloOrbita) * inclinacaoMaxima;
 
         ctx.beginPath();
         ctx.arc(cx, cy, raioTerra, 0, Math.PI * 2);
-        ctx.fillStyle = '#112244';
+        ctx.fillStyle = '#111a2e'; 
         ctx.fill();
 
         ctx.save();
@@ -50,54 +52,39 @@ export class Simulador2D {
         ctx.clip();
 
         ctx.beginPath();
-        // Cria uma máscara para o lado iluminado
-        ctx.amberLuz = cx + (Math.sin(anguloOrbita) * raioTerra * Math.sin(inclinacaoEixo));
-        
-        // Desenha a metade esquerda iluminada ajustando pela inclinação estacional
-        ctx.moveTo(cx, cy - raioTerra * 2);
-        ctx.bezierCurveTo(
-            cx - raioTerra * 2 * fatorLuz, cy - raioTerra,
-            cx - raioTerra * 2 * fatorLuz, cy + raioTerra,
-            cx, cy + raioTerra * 2
-        );
-        ctx.lineTo(0, cy + raioTerra * 2);
-        ctx.lineTo(0, cy - raioTerra * 2);
-        ctx.closePath();
-        ctx.fillStyle = '#3366cc';
+        ctx.arc(cx, cy, raioTerra, Math.PI / 2, (3 * Math.PI) / 2);
+        ctx.fillStyle = '#2b5cb8';
         ctx.fill();
         ctx.restore();
 
-        // 5. DESENHAR O EIXO DE ROTAÇÃO
         ctx.save();
         ctx.translate(cx, cy);
-        ctx.rotate(inclinacaoEixo); // O eixo físico é estático em 23.5°
+        ctx.rotate(inclinacaoVisualEixo);
 
-        // Linha do Eixo
-        ctx.strokeStyle = '#ff5555';
+        ctx.strokeStyle = '#ff4444';
         ctx.lineWidth = 2;
         ctx.setLineDash([4, 4]);
         ctx.beginPath();
-        ctx.moveTo(0, -raioTerra - 20);
-        ctx.lineTo(0, raioTerra + 20);
+        ctx.moveTo(0, -raioTerra - 8);
+        ctx.lineTo(0, raioTerra + 8);
         ctx.stroke();
-        ctx.setLineDash([]);
+        ctx.setLineDash([]); 
 
-        // Textos dos Polos
-        ctx.fillStyle = '#ff5555';
-        ctx.font = '10px sans-serif';
-        ctx.fillText('N', -4, -raioTerra - 25);
-        ctx.fillText('S', -4, raioTerra + 32);
+        ctx.fillStyle = '#ff4444';
+        ctx.font = 'bold 12px sans-serif';
+        ctx.fillText('N', -5, -raioTerra - 20);
+        ctx.fillText('S', -5, raioTerra + 28);
 
-        // Linha do Equador
         ctx.strokeStyle = '#ffffff';
-        ctx.lineWidth = 1.5;
+        ctx.lineWidth = 2;
         ctx.beginPath();
         ctx.moveTo(-raioTerra - 5, 0);
         ctx.lineTo(raioTerra + 5, 0);
         ctx.stroke();
         
         ctx.fillStyle = '#fff';
-        ctx.fillText('Equador', raioTerra + 10, 4);
+        ctx.font = '10px sans-serif';
+        ctx.fillText('Equador', raioTerra + 8, 4);
 
         ctx.restore();
     }
