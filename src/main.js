@@ -1,43 +1,48 @@
 import './style.css';
 import * as THREE from 'three';
 
+// --- SELEÇÃO DE ELEMENTOS DA INTERFACE ---
+const container3D = document.getElementById('canvas-3d-container');
+const sliderDia = document.getElementById('slider-dia');
+const btnPlay = document.getElementById('btn-play');
+const txtData = document.getElementById('txt-data');
+const txtNorte = document.getElementById('txt-norte');
+const txtSul = document.getElementById('txt-sul');
+const btnShortcuts = document.querySelectorAll('.btn-shortcut');
+
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x050505);
 
-const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
+const camera = new THREE.PerspectiveCamera(60, container3D.clientWidth / container3D.clientHeight, 0.1, 1000);
 camera.position.set(0, 15, 25);
 camera.lookAt(0, 0, 0);
 
 const renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setSize(window.innerWidth, window.innerHeight);
-document.body.appendChild(renderer.domElement);
+renderer.setSize(container3D.clientWidth, container3D.clientHeight);
+container3D.appendChild(renderer.domElement);
 
+// --- OBJETOS ---
+// Sol
 const sunLight = new THREE.PointLight(0xffffff, 3, 100);
 scene.add(sunLight);
-
 const ambientLight = new THREE.AmbientLight(0x333333);
 scene.add(ambientLight);
-
 const sunGeometry = new THREE.SphereGeometry(2, 32, 32);
-const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffd700 }); // Basic não precisa de luz externa para brilhar
+const sunMaterial = new THREE.MeshBasicMaterial({ color: 0xffd700 });
 const sun = new THREE.Mesh(sunGeometry, sunMaterial);
 scene.add(sun);
 
+// Terra e Eixo
 const earthGeometry = new THREE.SphereGeometry(0.8, 32, 32);
-const earthMaterial = new THREE.MeshStandardMaterial({ 
-    color: 0x2233ff, 
-    wireframe: false 
-});
+const earthMaterial = new THREE.MeshStandardMaterial({ color: 0x2233ff });
 const earth = new THREE.Mesh(earthGeometry, earthMaterial);
-
 const earthGroup = new THREE.Group();
 earthGroup.add(earth);
-
-// 23.5 graus convertidos para radianos
 const axialTilt = 23.5 * (Math.PI / 180);
 earthGroup.rotation.z = axialTilt;
 scene.add(earthGroup);
 
+// Órbita
 const orbitRadius = 12;
 const orbitPath = new THREE.RingGeometry(orbitRadius - 0.05, orbitRadius + 0.05, 64);
 const orbitMaterial = new THREE.MeshBasicMaterial({ color: 0x444444, side: THREE.DoubleSide });
@@ -45,27 +50,93 @@ const orbit = new THREE.Mesh(orbitPath, orbitMaterial);
 orbit.rotation.x = Math.PI / 2;
 scene.add(orbit);
 
-let orbitAngle = 0;
-const orbitSpeed = 0.005;
-const rotationSpeed = 0.02;
+// --- ESTADO DA SIMULAÇÃO ---
+let diaAtual = parseInt(sliderDia.value); 
+let estaAnimando = false;
+let rotationSpeed = 0.02;
 
+// --- FUNÇÕES DE ATUALIZAÇÃO ---
+
+function atualizarPosicaoTerra(dia) {
+    const anguloOrbita = ((dia - 80) / 365) * Math.PI * 2; 
+
+    earthGroup.position.x = Math.cos(anguloOrbita) * orbitRadius;
+    earthGroup.position.z = Math.sin(anguloOrbita) * orbitRadius;
+    
+    // Atualiza o texto da interface
+    atualizarTextosInterface(dia);
+}
+
+// Função para converter dia do ano em data e estação
+function atualizarTextosInterface(dia) {
+    // Lógica simplificada. Alterar para objetos Date.
+    const dataBase = new Date(2023, 0, 1);
+    dataBase.setDate(dia + 1);
+    const opcoes = { day: 'numeric', month: 'long' };
+    txtData.innerText = dataBase.toLocaleDateString('pt-BR', opcoes);
+
+    // Lógica de estação baseada nos Solstícios/Equinócios
+    if (dia >= 80 && dia < 172) {
+        txtNorte.innerText = "Primavera"; txtSul.innerText = "Outono";
+    } else if (dia >= 172 && dia < 264) {
+        txtNorte.innerText = "Verão"; txtSul.innerText = "Inverno";
+    } else if (dia >= 264 && dia < 355) {
+        txtNorte.innerText = "Outono"; txtSul.innerText = "Primavera";
+    } else {
+        txtNorte.innerText = "Inverno"; txtSul.innerText = "Verão";
+    }
+}
+
+// --- CONFIGURAÇÃO DOS EVENTOS ---
+
+// Resposta do Slider
+sliderDia.addEventListener('input', (event) => {
+    estaAnimando = false;
+    btnPlay.innerText = "Reproduzir";
+    diaAtual = parseInt(event.target.value);
+    atualizarPosicaoTerra(diaAtual);
+});
+
+// Resposta do Botão Play/Pause
+btnPlay.addEventListener('click', () => {
+    estaAnimando = !estaAnimando;
+    btnPlay.innerText = estaAnimando ? "Pausar" : "Reproduzir";
+});
+
+// Resposta dos Botões de Atalho
+btnShortcuts.forEach(button => {
+    button.addEventListener('click', () => {
+        estaAnimando = false;
+        btnPlay.innerText = "Reproduzir";
+        diaAtual = parseInt(button.getAttribute('data-day'));
+        sliderDia.value = diaAtual;
+        atualizarPosicaoTerra(diaAtual);
+    });
+});
+
+// Ajuste de Tela
+window.addEventListener('resize', () => {
+    const width = container3D.clientWidth;
+    const height = container3D.clientHeight;
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+    renderer.setSize(width, height);
+});
+
+// --- LOOP DE ANIMAÇÃO ---
 function animate() {
     requestAnimationFrame(animate);
 
     earth.rotation.y += rotationSpeed;
 
-    orbitAngle += orbitSpeed;
-    
-    earthGroup.position.x = Math.cos(orbitAngle) * orbitRadius;
-    earthGroup.position.z = Math.sin(orbitAngle) * orbitRadius;
+    if (estaAnimando) {
+        diaAtual = (diaAtual + 0.1) % 365;
+        sliderDia.value = diaAtual;
+        atualizarPosicaoTerra(Math.floor(diaAtual));
+    }
 
     renderer.render(scene, camera);
 }
 
-window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-});
-
+atualizarPosicaoTerra(diaAtual);
 animate();

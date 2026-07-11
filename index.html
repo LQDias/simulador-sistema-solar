@@ -1,13 +1,42 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>simulador-sistema-solar</title>
+    <title>Simulador de Estações da Terra</title>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app-container">
+      <div id="canvas-3d-container"></div>
+      
+      <div id="panel-2d">
+        <h3>Visão Lateral (Hemisférios)</h3>
+        <div id="canvas-2d-container">
+          <p style="color: #666; text-align: center; margin-top: 50px;">[Painel 2D em breve]</p>
+        </div>
+        <div id="info-estacoes">
+          <p><strong>Data:</strong> <span id="txt-data">21 de Março</span></p>
+          <p><strong>Hemisfério Norte:</strong> <span id="txt-norte">Equinócio</span></p>
+          <p><strong>Hemisfério Sul:</strong> <span id="txt-sul">Equinócio</span></p>
+        </div>
+      </div>
+    </div>
+
+    <div id="controls-bar">
+      <div class="control-group">
+        <button id="btn-play">Pausar</button>
+        <input type="range" id="slider-dia" min="0" max="364" value="80" />
+      </div>
+      
+      <div class="shortcuts-group">
+        <button class="btn-shortcut" data-day="80">Equinócio de Março</button>
+        <button class="btn-shortcut" data-day="172">Solstício de Junho</button>
+        <button class="btn-shortcut" data-day="264">Equinócio de Setembro</button>
+        <button class="btn-shortcut" data-day="355">Solstício de Dezembro</button>
+      </div>
+    </div>
+
     <script type="module" src="/src/main.js"></script>
   </body>
 </html>
