@@ -23,286 +23,227 @@
 
     <main class="batalha-content">
 
-            <!-- Tela de preparação -->
-            <section id="tela-preparacao" class="batalha-card">
+        <!-- Tela de preparação -->
+        <section id="tela-preparacao" class="batalha-card">
 
-                <p class="batalha-eyebrow">JOGO EDUCATIVO</p>
+            <p class="batalha-eyebrow">JOGO EDUCATIVO</p>
 
-                <h1>Batalha Naval Geográfica</h1>
+            <h1>Batalha Naval Geográfica</h1>
 
-                <p class="batalha-description">
-                    Prepare sua turma para uma jornada de exploração
-                    pelo planisfério. Encontre embarcações escondidas
-                    e teste seus conhecimentos geográficos.
+            <p class="batalha-description">
+                Prepare sua turma para uma jornada de exploração
+                pelo planisfério. Encontre embarcações escondidas
+                e teste seus conhecimentos geográficos.
+            </p>
+
+            <form id="form-preparacao">
+
+                <label for="quantidade-alunos">
+                    Quantidade de alunos na turma
+                </label>
+
+                <input
+                    type="number"
+                    id="quantidade-alunos"
+                    min="1"
+                    step="1"
+                    placeholder="Ex: 30"
+                    required
+                />
+
+                <p class="form-help">
+                    Os alunos serão identificados pelo número da chamada.
                 </p>
 
-                <form id="form-preparacao">
+                <p
+                    id="mensagem-erro"
+                    class="mensagem-erro"
+                    aria-live="polite"
+                ></p>
 
-                    <label for="quantidade-alunos">
-                        Quantidade de alunos na turma
-                    </label>
-
-                    <input
-                        type="number"
-                        id="quantidade-alunos"
-                        min="1"
-                        step="1"
-                        placeholder="Ex: 30"
-                        required
-                    />
-
-                    <p class="form-help">
-                        Os alunos serão identificados pelo número da chamada.
-                    </p>
-
-                    <p
-                        id="mensagem-erro"
-                        class="mensagem-erro"
-                        aria-live="polite"
-                    ></p>
-
-                    <button type="submit" class="btn-primary">
-                        Iniciar partida
-                    </button>
-
-                </form>
-            </section>
-
-            <!-- Tela da partida -->
-            <section id="tela-partida" class="batalha-card" hidden>
-
-                <div class="partida-header">
-                    <div>
-                        <p class="batalha-eyebrow">MISSÃO COLETIVA</p>
-                        <h1>Batalha Naval Geográfica</h1>
-                    </div>
-
-                    <div class="partida-controles">
-                        <span id="indicador-ciclo" class="ciclo-indicador">
-                            Ciclo 1
-                        </span>
-
-                        <button
-                            type="button"
-                            id="btn-abrir-sorteio"
-                            class="btn-primary"
-                        >
-                            Turma e sorteio
-                        </button>
-                    </div>
-                </div>
-
-                <p class="batalha-description">
-                    Explore o planisfério e encontre as embarcações escondidas.
-                    O professor sorteia um aluno para cada missão.
-                </p>
-
-                <!-- Planisfério -->
-                <section class="tabuleiro-container">
-                    <div class="tabuleiro-header">
-                        <div>
-                            <h2>Planisfério</h2>
-                            <p>Grade de localização geográfica</p>
-                        </div>
-
-                        <span class="tabuleiro-legenda">30° × 30°</span>
-                    </div>
-
-                    <div class="tabuleiro-scroll">
-                        <div
-                            id="tabuleiro-geografico"
-                            class="tabuleiro-geografico"
-                            aria-label="Tabuleiro geográfico com 12 colunas e 6 linhas"
-                        ></div>
-                    </div>
-
-                    <div class="tabuleiro-orientacao">
-                        <span>↑ Norte</span>
-                        <span>↓ Sul</span>
-                        <span>← Oeste</span>
-                        <span>→ Leste</span>
-                    </div>
-                </section>
-
-                <button
-                    type="button"
-                    id="btn-voltar-config"
-                    class="btn-link"
-                >
-                    Encerrar partida
+                <button type="submit" class="btn-primary">
+                    Iniciar partida
                 </button>
 
-            </section>
+            </form>
+        </section>
 
-            <!-- Gerenciamento da turma e sorteio -->
-            <dialog
-                id="popup-sorteio"
-                class="popup-sorteio"
-                aria-labelledby="titulo-popup-sorteio"
-            >
-                <div class="popup-sorteio-header">
-                    <div>
-                        <p class="batalha-eyebrow">CONTROLE DA PARTIDA</p>
-                        <h2 id="titulo-popup-sorteio">Turma e sorteio</h2>
-                    </div>
+        <!-- Tela da partida -->
+        <section id="tela-partida" class="batalha-card" hidden>
+
+            <div class="partida-header">
+                <div>
+                    <p class="batalha-eyebrow">MISSÃO COLETIVA</p>
+                    <h1>Batalha Naval Geográfica</h1>
+                </div>
+
+                <div class="partida-controles">
+                    <span id="indicador-ciclo" class="ciclo-indicador">
+                        Ciclo 1
+                    </span>
 
                     <button
                         type="button"
-                        id="btn-fechar-sorteio"
-                        class="btn-fechar-popup"
-                        aria-label="Fechar gerenciamento da turma"
+                        id="btn-abrir-sorteio"
+                        class="btn-primary"
                     >
-                        ×
+                        Turma e sorteio
                     </button>
                 </div>
+            </div>
 
-                <div class="gerenciamento-layout">
+            <p class="batalha-description">
+                Explore o planisfério e encontre as embarcações escondidas.
+                O professor sorteia um aluno para cada missão.
+            </p>
 
-                    <!-- Área do sorteio -->
-                    <section class="gerenciamento-sorteio">
-                        <div class="sorteio-painel">
-                            <p class="sorteio-legenda">NÚMERO DA CHAMADA</p>
+            <!-- Planisfério -->
+            <section class="tabuleiro-container">
+                <div class="tabuleiro-header">
+                    <div>
+                        <h2>Planisfério</h2>
+                        <p>Grade de localização geográfica</p>
+                    </div>
 
-                            <strong id="aluno-sorteado" aria-live="polite">—</strong>
-
-                            <p id="mensagem-sorteio" class="mensagem-sorteio">
-                                Sorteie um aluno para começar.
-                            </p>
-                        </div>
-
-                        <div class="sorteio-acoes">
-                            <button
-                                type="button"
-                                id="btn-sortear"
-                                class="btn-primary"
-                            >
-                                Sortear aluno
-                            </button>
-
-                            <button
-                                type="button"
-                                id="btn-confirmar"
-                                class="btn-success"
-                                disabled
-                            >
-                                Confirmar presença
-                            </button>
-
-                            <button
-                                type="button"
-                                id="btn-ausente"
-                                class="btn-secondary"
-                                disabled
-                            >
-                                Marcar como ausente
-                            </button>
-                        </div>
-                    </section>
-
-                    <!-- Estatísticas e histórico -->
-                    <aside class="gerenciamento-resumo">
-
-                        <section class="resumo-turma">
-                            <h3>Resumo da turma</h3>
-
-                            <div class="estatisticas-turma">
-                                <div class="estatistica">
-                                    <strong id="total-participaram">0</strong>
-                                    <span>Participaram</span>
-                                </div>
-
-                                <div class="estatistica">
-                                    <strong id="total-disponiveis">0</strong>
-                                    <span>Disponíveis</span>
-                                </div>
-
-                                <div class="estatistica">
-                                    <strong id="total-ausentes">0</strong>
-                                    <span>Ausentes</span>
-                                </div>
-                            </div>
-                        </section>
-
-                        <section
-                            class="historico-container"
-                            aria-labelledby="titulo-historico"
-                        >
-                            <div class="historico-header">
-                                <h3 id="titulo-historico">Histórico de sorteios</h3>
-                                <span id="total-sorteios">0 registros</span>
-                            </div>
-
-                            <ul id="lista-historico" class="lista-historico">
-                                <li class="historico-vazio">
-                                    Nenhum aluno sorteado ainda.
-                                </li>
-                            </ul>
-                        </section>
-
-                    </aside>
+                    <span class="tabuleiro-legenda">30° × 30°</span>
                 </div>
-            </dialog>
 
-        <!-- Popup nativo do sorteio -->
-        <dialog
-            id="popup-sorteio"
-            class="popup-sorteio"
-            aria-labelledby="titulo-popup-sorteio"
-        >
-            <div class="popup-sorteio-header">
-                <h2 id="titulo-popup-sorteio">Sorteio de aluno</h2>
+                <div class="tabuleiro-scroll">
+                    <div
+                        id="tabuleiro-geografico"
+                        class="tabuleiro-geografico"
+                        aria-label="Tabuleiro geográfico com 12 colunas e 6 linhas"
+                    ></div>
+                </div>
 
-                <button
-                    type="button"
-                    id="btn-fechar-sorteio"
-                    class="btn-fechar-popup"
-                    aria-label="Fechar sorteio"
-                >
-                    ×
-                </button>
-            </div>
+                <div class="tabuleiro-orientacao">
+                    <span>↑ Norte</span>
+                    <span>↓ Sul</span>
+                    <span>← Oeste</span>
+                    <span>→ Leste</span>
+                </div>
+            </section>
 
-            <div class="sorteio-painel">
-                <p class="sorteio-legenda">NÚMERO DA CHAMADA</p>
+            <button
+                type="button"
+                id="btn-voltar-config"
+                class="btn-link"
+            >
+                Encerrar partida
+            </button>
 
-                <strong id="aluno-sorteado" aria-live="polite">—</strong>
-
-                <p id="mensagem-sorteio" class="mensagem-sorteio">
-                    Sorteando aluno...
-                </p>
-            </div>
-
-            <div class="sorteio-acoes">
-                <button
-                    type="button"
-                    id="btn-sortear"
-                    class="btn-primary"
-                    hidden
-                >
-                    Sortear próximo
-                </button>
-
-                <button
-                    type="button"
-                    id="btn-confirmar"
-                    class="btn-success"
-                    disabled
-                >
-                    Confirmar presença
-                </button>
-
-                <button
-                    type="button"
-                    id="btn-ausente"
-                    class="btn-secondary"
-                    disabled
-                >
-                    Aluno ausente
-                </button>
-            </div>
-        </dialog>
+        </section>
 
     </main>
+
+    <!-- Gerenciamento da turma e sorteio -->
+    <dialog
+        id="popup-sorteio"
+        class="popup-sorteio"
+        aria-labelledby="titulo-popup-sorteio"
+    >
+        <div class="popup-sorteio-header">
+            <div>
+                <p class="batalha-eyebrow">CONTROLE DA PARTIDA</p>
+                <h2 id="titulo-popup-sorteio">Turma e sorteio</h2>
+            </div>
+
+            <button
+                type="button"
+                id="btn-fechar-sorteio"
+                class="btn-fechar-popup"
+                aria-label="Fechar gerenciamento da turma"
+            >
+                ×
+            </button>
+        </div>
+
+        <div class="gerenciamento-layout">
+
+            <!-- Área do sorteio -->
+            <section class="gerenciamento-sorteio">
+                <div class="sorteio-painel">
+                    <p class="sorteio-legenda">NÚMERO DA CHAMADA</p>
+
+                    <strong id="aluno-sorteado" aria-live="polite">—</strong>
+
+                    <p id="mensagem-sorteio" class="mensagem-sorteio">
+                        Sorteie um aluno para começar.
+                    </p>
+                </div>
+
+                <div class="sorteio-acoes">
+                    <button
+                        type="button"
+                        id="btn-sortear"
+                        class="btn-primary"
+                    >
+                        Sortear aluno
+                    </button>
+
+                    <button
+                        type="button"
+                        id="btn-confirmar"
+                        class="btn-success"
+                        disabled
+                    >
+                        Confirmar presença
+                    </button>
+
+                    <button
+                        type="button"
+                        id="btn-ausente"
+                        class="btn-secondary"
+                        disabled
+                    >
+                        Marcar como ausente
+                    </button>
+                </div>
+            </section>
+
+            <!-- Estatísticas e histórico -->
+            <aside class="gerenciamento-resumo">
+
+                <section class="resumo-turma">
+                    <h3>Resumo da turma</h3>
+
+                    <div class="estatisticas-turma">
+                        <div class="estatistica">
+                            <strong id="total-participaram">0</strong>
+                            <span>Participaram</span>
+                        </div>
+
+                        <div class="estatistica">
+                            <strong id="total-disponiveis">0</strong>
+                            <span>Disponíveis</span>
+                        </div>
+
+                        <div class="estatistica">
+                            <strong id="total-ausentes">0</strong>
+                            <span>Ausentes</span>
+                        </div>
+                    </div>
+                </section>
+
+                <section
+                    class="historico-container"
+                    aria-labelledby="titulo-historico"
+                >
+                    <div class="historico-header">
+                        <h3 id="titulo-historico">Histórico de sorteios</h3>
+                        <span id="total-sorteios">0 registros</span>
+                    </div>
+
+                    <ul id="lista-historico" class="lista-historico">
+                        <li class="historico-vazio">
+                            Nenhum aluno sorteado ainda.
+                        </li>
+                    </ul>
+                </section>
+
+            </aside>
+        </div>
+    </dialog>
 
     <script
         type="module"

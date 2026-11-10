@@ -31,18 +31,20 @@
 
 /* Conteúdo principal */
 .batalha-content {
-    min-height: calc(100vh - 56px);
+    height: calc(100vh - 56px);
+    min-height: 0;
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 30px 20px;
-    overflow-y: auto;
+    padding: 14px 20px;
+    overflow: hidden;
 }
 
 .batalha-card {
     width: 100%;
-    max-width: 850px;
-    padding: 36px;
+    max-width: 1250px;
+    height: 100%;
+    padding: 22px;
     background-color: #111;
     border: 1px solid #292929;
     border-radius: 12px;
@@ -163,11 +165,26 @@ button:disabled {
 }
 
 /* Cabeçalho da partida */
+#tela-partida {
+    display: flex;
+    flex-direction: column;
+}
+
+#tela-partida[hidden] {
+    display: none;
+}
+
 .partida-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
+    align-items: center;
     gap: 16px;
+}
+
+.partida-controles {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 .ciclo-indicador {
@@ -179,7 +196,114 @@ button:disabled {
     white-space: nowrap;
 }
 
-/* Painel do sorteio */
+#btn-abrir-sorteio {
+    white-space: nowrap;
+}
+
+/* Planisfério */
+.tabuleiro-container {
+    margin: 10px 0;
+    padding: 18px;
+    background-color: #171717;
+    border: 1px solid #303030;
+    border-radius: 10px;
+}
+
+#tela-partida .tabuleiro-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+
+.tabuleiro-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.tabuleiro-header h2 {
+    font-size: 19px;
+    margin-bottom: 5px;
+}
+
+.tabuleiro-header p {
+    color: #999;
+    font-size: 12px;
+}
+
+.tabuleiro-legenda {
+    color: #75cfff;
+    background-color: #1c3342;
+    padding: 6px 10px;
+    border-radius: 15px;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.tabuleiro-scroll {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 6px;
+}
+
+.tabuleiro-geografico {
+    display: grid;
+    grid-template-columns: 34px repeat(12, minmax(38px, 1fr));
+    gap: 4px;
+    min-width: 550px;
+}
+
+#tela-partida .tabuleiro-geografico {
+    width: 100%;
+}
+
+.celula-eixo,
+.celula-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+    color: #8fa6b5;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.celula-eixo {
+    color: #00aaff;
+}
+
+.celula-tabuleiro {
+    min-height: clamp(38px, 7vh, 65px);
+    background-color: #18384a;
+    border: 1px solid #28536b;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.celula-tabuleiro:hover {
+    background-color: #245570;
+}
+
+.tabuleiro-orientacao {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 14px;
+    color: #999;
+    font-size: 11px;
+}
+
+/* Indicador e botão de encerramento */
+.btn-link {
+    align-self: flex-start;
+}
+
+/* Painel de sorteio */
 .sorteio-painel {
     text-align: center;
     padding: 26px 18px;
@@ -247,7 +371,7 @@ button:disabled {
 
 /* Histórico */
 .historico-container {
-    margin-top: 26px;
+    margin-top: 0;
 }
 
 .historico-header {
@@ -258,7 +382,7 @@ button:disabled {
     margin-bottom: 12px;
 }
 
-.historico-header h2 {
+.historico-header h3 {
     font-size: 17px;
 }
 
@@ -272,8 +396,9 @@ button:disabled {
     display: flex;
     flex-direction: column;
     gap: 7px;
-    max-height: 220px;
+    max-height: 250px;
     overflow-y: auto;
+    padding-right: 4px;
 }
 
 .historico-item {
@@ -310,333 +435,17 @@ button:disabled {
     padding: 12px 0;
 }
 
-/* Responsividade */
-@media (max-width: 650px) {
-    .batalha-card {
-        padding: 22px;
-    }
-
-    .batalha-card h1 {
-        font-size: 24px;
-    }
-
-    .estatisticas-turma {
-        grid-template-columns: 1fr;
-    }
-
-    .sorteio-acoes {
-        flex-direction: column;
-    }
-
-    .sorteio-acoes button {
-        width: 100%;
-    }
-}
-
-/* Tabuleiro geográfico */
-.tabuleiro-container {
-    margin: 28px 0;
-    padding: 18px;
-    background-color: #171717;
-    border: 1px solid #303030;
-    border-radius: 10px;
-}
-
-.tabuleiro-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-}
-
-.tabuleiro-header h2 {
-    font-size: 19px;
-    margin-bottom: 5px;
-}
-
-.tabuleiro-header p {
-    color: #999;
-    font-size: 12px;
-}
-
-.tabuleiro-legenda {
-    color: #75cfff;
-    background-color: #1c3342;
-    padding: 6px 10px;
-    border-radius: 15px;
-    font-size: 11px;
-    white-space: nowrap;
-}
-
-.tabuleiro-scroll {
-    width: 100%;
-    overflow-x: auto;
-    padding-bottom: 6px;
-}
-
-.tabuleiro-geografico {
-    display: grid;
-    grid-template-columns: 34px repeat(12, minmax(38px, 1fr));
-    gap: 4px;
-    min-width: 550px;
-}
-
-.celula-eixo,
-.celula-cabecalho {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 32px;
-    color: #8fa6b5;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.celula-eixo {
-    color: #00aaff;
-}
-
-.celula-tabuleiro {
-    min-height: 48px;
-    background-color: #18384a;
-    border: 1px solid #28536b;
-    border-radius: 4px;
-    transition: background-color 0.2s;
-}
-
-.celula-tabuleiro:hover {
-    background-color: #245570;
-}
-
-.tabuleiro-orientacao {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 18px;
-    margin-top: 14px;
-    color: #999;
-    font-size: 11px;
-}
-/* Layout compacto da partida */
-.batalha-content {
-    height: calc(100vh - 56px);
-    min-height: 0;
-    padding: 14px 20px;
-    overflow: hidden;
-}
-
-.batalha-card {
-    max-width: 1250px;
-    height: 100%;
-    padding: 22px;
-}
-
-#tela-partida {
-    display: flex;
-    flex-direction: column;
-}
-
-#tela-partida[hidden] {
-    display: none;
-}
-
-#tela-partida .batalha-description {
-    margin-bottom: 14px;
-}
-
-.partida-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.8fr);
-    gap: 18px;
-    flex: 1;
-    min-height: 0;
-}
-
-/* Planisfério */
-.partida-layout .tabuleiro-container {
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    min-width: 0;
-}
-
-.celula-tabuleiro {
-    min-height: clamp(34px, 6vh, 54px);
-}
-
-/* Painel lateral */
-.painel-lateral {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
-    min-height: 0;
-    min-width: 0;
-}
-
-.btn-abrir-sorteio {
-    width: 100%;
-    min-height: 46px;
-    font-size: 15px;
-}
-
-.painel-lateral .estatisticas-turma {
-    gap: 8px;
-}
-
-.painel-lateral .estatistica {
-    padding: 11px;
-}
-
-.painel-lateral .estatistica strong {
-    font-size: 22px;
-}
-
-.painel-lateral .historico-container {
-    margin-top: 0;
-    min-height: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-.painel-lateral .lista-historico {
-    max-height: none;
-    min-height: 0;
-    overflow-y: auto;
-}
-
-/* Popup de sorteio */
-.popup-sorteio[hidden] {
-    display: none;
-}
-
-.popup-sorteio {
-    position: fixed;
-    inset: 0;
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    background: rgba(0, 0, 0, 0.78);
-}
-
-.popup-sorteio-conteudo {
-    width: 100%;
-    max-width: 440px;
-    padding: 24px;
-    background: #111;
-    border: 1px solid #34536a;
-    border-radius: 14px;
-    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
-}
-
-.popup-sorteio-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-
-.popup-sorteio-header h2 {
-    font-size: 20px;
-}
-
-.btn-fechar-popup {
-    padding: 2px 9px;
-    background: transparent;
-    border: none;
-    color: #aaa;
-    font-size: 28px;
-}
-
-.btn-fechar-popup:hover {
-    color: white;
-}
-
-.popup-sorteio .sorteio-painel {
-    padding: 24px 16px;
-}
-
-.popup-sorteio .sorteio-acoes {
-    flex-direction: column;
-    margin-bottom: 0;
-}
-
-.popup-sorteio .sorteio-acoes button {
-    width: 100%;
-    min-height: 42px;
-}
-
-/* Em telas menores, permite rolagem em vez de comprimir demais */
-@media (max-width: 850px), (max-height: 650px) {
-    .batalha-content {
-        height: auto;
-        min-height: calc(100vh - 56px);
-        overflow-y: auto;
-        align-items: flex-start;
-    }
-
-    .batalha-card {
-        height: auto;
-    }
-
-    .partida-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .painel-lateral {
-        min-height: 400px;
-    }
-}
-
-/* Cabeçalho da partida */
-.partida-header {
-    align-items: center;
-}
-
-.partida-controles {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-#btn-abrir-sorteio {
-    white-space: nowrap;
-}
-
-/* Planisfério como área principal */
-#tela-partida .tabuleiro-container {
-    margin: 10px 0;
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
-
-#tela-partida .tabuleiro-geografico {
-    width: 100%;
-}
-
-#tela-partida .celula-tabuleiro {
-    min-height: clamp(38px, 7vh, 65px);
-}
-
 /* Diálogo de gerenciamento */
 .popup-sorteio {
     width: min(850px, calc(100vw - 40px));
     max-width: none;
     max-height: min(650px, calc(100vh - 40px));
-
     margin: auto;
     padding: 28px;
-
     color: #eee;
     background: #111;
     border: 1px solid #303d47;
     border-radius: 12px;
-
     box-shadow: 0 20px 70px rgba(0, 0, 0, 0.65);
 }
 
@@ -665,12 +474,10 @@ button:disabled {
     width: 38px;
     height: 38px;
     padding: 0;
-
     color: #aaa;
     background: #1b1b1b;
     border: 1px solid #383838;
     border-radius: 7px;
-
     font-size: 25px;
     cursor: pointer;
 }
@@ -741,19 +548,38 @@ button:disabled {
     font-size: 11px;
 }
 
-.gerenciamento-resumo .historico-container {
-    margin-top: 0;
-    min-height: 0;
+/* Responsividade */
+@media (max-width: 850px), (max-height: 650px) {
+    .batalha-content {
+        height: auto;
+        min-height: calc(100vh - 56px);
+        overflow-y: auto;
+        align-items: flex-start;
+    }
+
+    .batalha-card {
+        height: auto;
+    }
 }
 
-.gerenciamento-resumo .lista-historico {
-    max-height: 250px;
-    overflow-y: auto;
-    padding-right: 4px;
-}
-
-/* Ajustes de altura e largura */
 @media (max-width: 700px) {
+    .batalha-card {
+        padding: 22px;
+    }
+
+    .batalha-card h1 {
+        font-size: 24px;
+    }
+
+    .partida-header {
+        align-items: flex-start;
+    }
+
+    .partida-controles {
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
     .gerenciamento-layout {
         grid-template-columns: 1fr;
     }
@@ -763,12 +589,19 @@ button:disabled {
         overflow-y: auto;
     }
 
-    .partida-controles {
-        flex-direction: column;
-        align-items: flex-end;
-    }
-
     .gerenciamento-resumo .estatisticas-turma {
         grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .sorteio-acoes {
+        flex-direction: column;
+    }
+
+    .sorteio-acoes button {
+        width: 100%;
+    }
+
+    .estatisticas-turma {
+        grid-template-columns: 1fr;
     }
 }
