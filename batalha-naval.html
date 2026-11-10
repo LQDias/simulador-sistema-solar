@@ -169,81 +169,64 @@
             </aside>
         </div>
 
-        <!-- Popup do sorteio -->
-        <div
+        <!-- Popup nativo do sorteio -->
+        <dialog
             id="popup-sorteio"
             class="popup-sorteio"
-            hidden
+            aria-labelledby="titulo-popup-sorteio"
         >
-            <section
-                class="popup-sorteio-conteudo"
-                role="dialog"
-                aria-modal="true"
-                aria-labelledby="titulo-popup-sorteio"
-            >
-                <div class="popup-sorteio-header">
-                    <h2 id="titulo-popup-sorteio">Sorteio de aluno</h2>
+            <div class="popup-sorteio-header">
+                <h2 id="titulo-popup-sorteio">Sorteio de aluno</h2>
 
-                    <button
-                        type="button"
-                        id="btn-fechar-sorteio"
-                        class="btn-fechar-popup"
-                        aria-label="Fechar sorteio"
-                    >
-                        ×
-                    </button>
-                </div>
+                <button
+                    type="button"
+                    id="btn-fechar-sorteio"
+                    class="btn-fechar-popup"
+                    aria-label="Fechar sorteio"
+                >
+                    ×
+                </button>
+            </div>
 
-                <div class="sorteio-painel">
-                    <p class="sorteio-legenda">NÚMERO DA CHAMADA</p>
+            <div class="sorteio-painel">
+                <p class="sorteio-legenda">NÚMERO DA CHAMADA</p>
 
-                    <strong id="aluno-sorteado" aria-live="polite">—</strong>
+                <strong id="aluno-sorteado" aria-live="polite">—</strong>
 
-                    <p id="mensagem-sorteio" class="mensagem-sorteio">
-                        Sorteando aluno...
-                    </p>
-                </div>
+                <p id="mensagem-sorteio" class="mensagem-sorteio">
+                    Sorteando aluno...
+                </p>
+            </div>
 
-                <div class="sorteio-acoes">
-                    <button
-                        type="button"
-                        id="btn-sortear"
-                        class="btn-primary"
-                        hidden
-                    >
-                        Sortear próximo
-                    </button>
+            <div class="sorteio-acoes">
+                <button
+                    type="button"
+                    id="btn-sortear"
+                    class="btn-primary"
+                    hidden
+                >
+                    Sortear próximo
+                </button>
 
-                    <button
-                        type="button"
-                        id="btn-confirmar"
-                        class="btn-success"
-                        disabled
-                    >
-                        Confirmar presença
-                    </button>
+                <button
+                    type="button"
+                    id="btn-confirmar"
+                    class="btn-success"
+                    disabled
+                >
+                    Confirmar presença
+                </button>
 
-                    <button
-                        type="button"
-                        id="btn-ausente"
-                        class="btn-secondary"
-                        disabled
-                    >
-                        Aluno ausente
-                    </button>
-                </div>
-            </section>
-        </div>
-
-            <button
-                type="button"
-                id="btn-voltar-config"
-                class="btn-link"
-            >
-                Encerrar e voltar à configuração
-            </button>
-
-        </section>
+                <button
+                    type="button"
+                    id="btn-ausente"
+                    class="btn-secondary"
+                    disabled
+                >
+                    Aluno ausente
+                </button>
+            </div>
+        </dialog>
 
     </main>
 
