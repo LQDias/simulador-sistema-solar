@@ -1,0 +1,84 @@
+
+.batalha-content {
+    height: calc(100vh - 56px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 20px;
+    overflow-y: auto;
+}
+
+.batalha-card {
+    width: 100%;
+    max-width: 850px;
+    padding: 40px;
+    background-color: #111;
+    border: 1px solid #292929;
+    border-radius: 12px;
+}
+
+.batalha-eyebrow {
+    color: #00aaff;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.batalha-card h1 {
+    font-size: 32px;
+    margin-bottom: 16px;
+}
+
+.batalha-description {
+    color: #aaa;
+    line-height: 1.6;
+}
+
+.batalha-topics {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+    margin: 30px 0;
+}
+
+.batalha-topic {
+    padding: 18px;
+    background-color: #1a1a1a;
+    border: 1px solid #303030;
+    border-radius: 8px;
+}
+
+.batalha-topic h3 {
+    color: #00aaff;
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+
+.batalha-topic p {
+    color: #aaa;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.batalha-status {
+    color: #aaa;
+    font-size: 13px;
+    border-left: 3px solid #00aaff;
+    padding: 10px 14px;
+    background-color: #1a1a1a;
+}
+
+@media (max-width: 650px) {
+    .batalha-card {
+        padding: 24px;
+    }
+
+    .batalha-card h1 {
+        font-size: 25px;
+    }
+
+    .batalha-topics {
+        grid-template-columns: 1fr;
+    }
+}

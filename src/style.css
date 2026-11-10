@@ -14,9 +14,9 @@ html, body {
 }
 
 #app-container {
-  display: flex;
-  width: 100vw;
-  height: calc(100vh - 70px);
+    display: flex;
+    width: 100vw;
+    height: calc(100vh - 126px);
 }
 
 #canvas-3d-container {
@@ -113,4 +113,35 @@ button {
 button:hover {
   background-color: #333;
   border-color: #00aaff;
+}
+
+/* Navegação entre páginas */
+.top-nav {
+    height: 56px;
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    padding: 0 20px;
+    background-color: #0b0b0b;
+    border-bottom: 1px solid #222;
+}
+
+.nav-tab {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    color: #aaa;
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+    font-size: 14px;
+}
+
+.nav-tab:hover {
+    color: white;
+    background-color: #161616;
+}
+
+.nav-tab.active {
+    color: white;
+    border-bottom-color: #00aaff;
 }
