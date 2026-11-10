@@ -590,3 +590,185 @@ button:disabled {
         min-height: 400px;
     }
 }
+
+/* Cabeçalho da partida */
+.partida-header {
+    align-items: center;
+}
+
+.partida-controles {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#btn-abrir-sorteio {
+    white-space: nowrap;
+}
+
+/* Planisfério como área principal */
+#tela-partida .tabuleiro-container {
+    margin: 10px 0;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+#tela-partida .tabuleiro-geografico {
+    width: 100%;
+}
+
+#tela-partida .celula-tabuleiro {
+    min-height: clamp(38px, 7vh, 65px);
+}
+
+/* Diálogo de gerenciamento */
+.popup-sorteio {
+    width: min(850px, calc(100vw - 40px));
+    max-width: none;
+    max-height: min(650px, calc(100vh - 40px));
+
+    margin: auto;
+    padding: 28px;
+
+    color: #eee;
+    background: #111;
+    border: 1px solid #303d47;
+    border-radius: 12px;
+
+    box-shadow: 0 20px 70px rgba(0, 0, 0, 0.65);
+}
+
+.popup-sorteio::backdrop {
+    background: rgba(0, 0, 0, 0.78);
+    backdrop-filter: blur(3px);
+}
+
+.popup-sorteio-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.popup-sorteio-header .batalha-eyebrow {
+    margin-bottom: 5px;
+}
+
+.popup-sorteio-header h2 {
+    font-size: 23px;
+}
+
+.btn-fechar-popup {
+    width: 38px;
+    height: 38px;
+    padding: 0;
+
+    color: #aaa;
+    background: #1b1b1b;
+    border: 1px solid #383838;
+    border-radius: 7px;
+
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.btn-fechar-popup:hover {
+    color: white;
+    background: #292929;
+}
+
+/* Conteúdo interno do diálogo */
+.gerenciamento-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: 24px;
+}
+
+.gerenciamento-sorteio,
+.gerenciamento-resumo {
+    min-width: 0;
+}
+
+.gerenciamento-sorteio .sorteio-painel {
+    background: #172b38;
+    border: 1px solid #29495d;
+    border-radius: 9px;
+}
+
+.gerenciamento-sorteio #aluno-sorteado {
+    color: #75cfff;
+}
+
+.gerenciamento-sorteio .sorteio-acoes {
+    display: flex;
+    flex-direction: column;
+    margin: 14px 0 0;
+}
+
+.gerenciamento-sorteio .sorteio-acoes button {
+    width: 100%;
+    min-height: 43px;
+}
+
+.gerenciamento-resumo {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.gerenciamento-resumo h3 {
+    font-size: 16px;
+    margin-bottom: 12px;
+}
+
+.gerenciamento-resumo .estatisticas-turma {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.gerenciamento-resumo .estatistica {
+    padding: 12px 9px;
+}
+
+.gerenciamento-resumo .estatistica strong {
+    font-size: 23px;
+}
+
+.gerenciamento-resumo .estatistica span {
+    font-size: 11px;
+}
+
+.gerenciamento-resumo .historico-container {
+    margin-top: 0;
+    min-height: 0;
+}
+
+.gerenciamento-resumo .lista-historico {
+    max-height: 250px;
+    overflow-y: auto;
+    padding-right: 4px;
+}
+
+/* Ajustes de altura e largura */
+@media (max-width: 700px) {
+    .gerenciamento-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .popup-sorteio {
+        padding: 20px;
+        overflow-y: auto;
+    }
+
+    .partida-controles {
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    .gerenciamento-resumo .estatisticas-turma {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}

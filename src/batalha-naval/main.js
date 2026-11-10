@@ -112,14 +112,6 @@ function realizarSorteio() {
 
     const resultado = sorteio.sortearAluno();
 
-    if (!resultado) {
-        mensagemSorteio.textContent =
-            'Não há alunos disponíveis para sortear neste momento.';
-
-        btnSortear.disabled = true;
-        return;
-    }
-
     alunoSorteado.textContent =
         String(resultado.numero).padStart(2, '0');
 
