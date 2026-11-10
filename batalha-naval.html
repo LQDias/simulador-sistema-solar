@@ -35,32 +35,6 @@
                 pelo planisfério. Encontre embarcações escondidas
                 e teste seus conhecimentos geográficos.
             </p>
-            <!-- Tabuleiro geográfico -->
-            <section class="tabuleiro-container">
-                <div class="tabuleiro-header">
-                    <div>
-                        <h2>Planisfério</h2>
-                        <p>Grade de localização geográfica</p>
-                    </div>
-
-                    <span class="tabuleiro-legenda">30° × 30°</span>
-                </div>
-
-                <div class="tabuleiro-scroll">
-                    <div
-                        id="tabuleiro-geografico"
-                        class="tabuleiro-geografico"
-                        aria-label="Tabuleiro geográfico com 12 colunas e 6 linhas"
-                    ></div>
-                </div>
-
-                <div class="tabuleiro-orientacao">
-                    <span>↑ Norte</span>
-                    <span>↓ Sul</span>
-                    <span>← Oeste</span>
-                    <span>→ Leste</span>
-                </div>
-            </section>
 
             <form id="form-preparacao">
 
@@ -95,114 +69,171 @@
         </section>
 
         <!-- Tela da partida -->
-        <section id="tela-partida" class="batalha-card" hidden>
+                <section id="tela-partida" class="batalha-card" hidden>
 
-            <div class="partida-header">
-                <div>
-                    <p class="batalha-eyebrow">MISSÃO COLETIVA</p>
-                    <h1>Batalha Naval Geográfica</h1>
+                    <div class="partida-header">
+                        <div>
+                            <p class="batalha-eyebrow">MISSÃO COLETIVA</p>
+                            <h1>Batalha Naval Geográfica</h1>
+                        </div>
+
+                        <span id="indicador-ciclo" class="ciclo-indicador">
+                            Ciclo 1
+                        </span>
+                    </div>
+
+                    <p class="batalha-description">
+                        Cada aluno participa uma vez por ciclo.
+                        Se estiver ausente, o professor pode passar
+                        para o próximo número.
+                    </p>
+                    
+                    <p class="batalha-description">
+            Explore o planisfério e encontre as embarcações escondidas.
+            O professor sorteia um aluno para cada missão.
+        </p>
+
+        <div class="partida-layout">
+
+            <!-- Área principal: planisfério -->
+            <section class="tabuleiro-container">
+                <div class="tabuleiro-header">
+                    <div>
+                        <h2>Planisfério</h2>
+                        <p>Grade de localização geográfica</p>
+                    </div>
+
+                    <span class="tabuleiro-legenda">30° × 30°</span>
                 </div>
 
-                <span id="indicador-ciclo" class="ciclo-indicador">
-                    Ciclo 1
-                </span>
-            </div>
+                <div class="tabuleiro-scroll">
+                    <div
+                        id="tabuleiro-geografico"
+                        class="tabuleiro-geografico"
+                        aria-label="Tabuleiro geográfico com 12 colunas e 6 linhas"
+                    ></div>
+                </div>
 
-            <p class="batalha-description">
-                Cada aluno participa uma vez por ciclo.
-                Se estiver ausente, o professor pode passar
-                para o próximo número.
-            </p>
+                <div class="tabuleiro-orientacao">
+                    <span>↑ Norte</span>
+                    <span>↓ Sul</span>
+                    <span>← Oeste</span>
+                    <span>→ Leste</span>
+                </div>
+            </section>
 
-            <!-- Número sorteado -->
-            <div class="sorteio-painel">
-
-                <p class="sorteio-legenda">
-                    NÚMERO DA CHAMADA
-                </p>
-
-                <strong id="aluno-sorteado" aria-live="polite">
-                    —
-                </strong>
-
-                <p id="mensagem-sorteio" class="mensagem-sorteio">
-                    Sorteie um aluno para começar.
-                </p>
-
-            </div>
-
-            <!-- Ações -->
-            <div class="sorteio-acoes">
+            <!-- Área lateral: sorteio, estatísticas e histórico -->
+            <aside class="painel-lateral">
 
                 <button
                     type="button"
-                    id="btn-sortear"
-                    class="btn-primary"
+                    id="btn-abrir-sorteio"
+                    class="btn-primary btn-abrir-sorteio"
                 >
                     Sortear aluno
                 </button>
 
-                <button
-                    type="button"
-                    id="btn-confirmar"
-                    class="btn-success"
-                    disabled
+                <div class="estatisticas-turma">
+                    <div class="estatistica">
+                        <strong id="total-participaram">0</strong>
+                        <span>Já participaram</span>
+                    </div>
+
+                    <div class="estatistica">
+                        <strong id="total-disponiveis">0</strong>
+                        <span>Aguardando sorteio</span>
+                    </div>
+
+                    <div class="estatistica">
+                        <strong id="total-ausentes">0</strong>
+                        <span>Pulados por ausência</span>
+                    </div>
+                </div>
+
+                <section
+                    class="historico-container"
+                    aria-labelledby="titulo-historico"
                 >
-                    Confirmar presença
-                </button>
+                    <div class="historico-header">
+                        <h2 id="titulo-historico">Histórico de sorteios</h2>
+                        <span id="total-sorteios">0 registros</span>
+                    </div>
 
-                <button
-                    type="button"
-                    id="btn-ausente"
-                    class="btn-secondary"
-                    disabled
-                >
-                    Aluno ausente — sortear novamente
-                </button>
+                    <ul id="lista-historico" class="lista-historico">
+                        <li class="historico-vazio">
+                            Nenhum aluno sorteado ainda.
+                        </li>
+                    </ul>
+                </section>
 
-            </div>
+            </aside>
+        </div>
 
-            <!-- Estatísticas -->
-            <div class="estatisticas-turma">
-
-                <div class="estatistica">
-                    <strong id="total-participaram">0</strong>
-                    <span>Já participaram</span>
-                </div>
-
-                <div class="estatistica">
-                    <strong id="total-disponiveis">0</strong>
-                    <span>Aguardando sorteio</span>
-                </div>
-
-                <div class="estatistica">
-                    <strong id="total-ausentes">0</strong>
-                    <span>Pulados por ausência</span>
-                </div>
-
-            </div>
-
-            <!-- Histórico -->
+        <!-- Popup do sorteio -->
+        <div
+            id="popup-sorteio"
+            class="popup-sorteio"
+            hidden
+        >
             <section
-                class="historico-container"
-                aria-labelledby="titulo-historico"
+                class="popup-sorteio-conteudo"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="titulo-popup-sorteio"
             >
+                <div class="popup-sorteio-header">
+                    <h2 id="titulo-popup-sorteio">Sorteio de aluno</h2>
 
-                <div class="historico-header">
-                    <h2 id="titulo-historico">
-                        Histórico de sorteios
-                    </h2>
-
-                    <span id="total-sorteios">0 registros</span>
+                    <button
+                        type="button"
+                        id="btn-fechar-sorteio"
+                        class="btn-fechar-popup"
+                        aria-label="Fechar sorteio"
+                    >
+                        ×
+                    </button>
                 </div>
 
-                <ul id="lista-historico" class="lista-historico">
-                    <li class="historico-vazio">
-                        Nenhum aluno sorteado ainda.
-                    </li>
-                </ul>
+                <div class="sorteio-painel">
+                    <p class="sorteio-legenda">NÚMERO DA CHAMADA</p>
 
+                    <strong id="aluno-sorteado" aria-live="polite">—</strong>
+
+                    <p id="mensagem-sorteio" class="mensagem-sorteio">
+                        Sorteando aluno...
+                    </p>
+                </div>
+
+                <div class="sorteio-acoes">
+                    <button
+                        type="button"
+                        id="btn-sortear"
+                        class="btn-primary"
+                        hidden
+                    >
+                        Sortear próximo
+                    </button>
+
+                    <button
+                        type="button"
+                        id="btn-confirmar"
+                        class="btn-success"
+                        disabled
+                    >
+                        Confirmar presença
+                    </button>
+
+                    <button
+                        type="button"
+                        id="btn-ausente"
+                        class="btn-secondary"
+                        disabled
+                    >
+                        Aluno ausente
+                    </button>
+                </div>
             </section>
+        </div>
 
             <button
                 type="button"

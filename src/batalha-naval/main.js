@@ -12,6 +12,9 @@ const telaPreparacao = document.getElementById('tela-preparacao');
 const telaPartida = document.getElementById('tela-partida');
 
 // Elementos do sorteio
+const btnAbrirSorteio = document.getElementById('btn-abrir-sorteio');
+const btnFecharSorteio = document.getElementById('btn-fechar-sorteio');
+const popupSorteio = document.getElementById('popup-sorteio');
 const alunoSorteado = document.getElementById('aluno-sorteado');
 const mensagemSorteio = document.getElementById('mensagem-sorteio');
 const indicadorCiclo = document.getElementById('indicador-ciclo');
@@ -82,8 +85,27 @@ inputQuantidade.addEventListener('input', () => {
 });
 
 
-// Sortear aluno
-btnSortear.addEventListener('click', () => {
+// Abrir popup e sortear aluno
+btnAbrirSorteio.addEventListener('click', () => {
+    popupSorteio.hidden = false;
+
+    // Se já existe um aluno sorteado, apenas reabre o popup.
+    if (sorteio.alunoAtual !== null) {
+        return;
+    }
+
+    realizarSorteio();
+});
+
+// Fechar popup
+btnFecharSorteio.addEventListener('click', () => {
+    popupSorteio.hidden = true;
+});
+
+// Realizar o sorteio
+btnSortear.addEventListener('click', realizarSorteio);
+
+function realizarSorteio() {
     if (!sorteio || sorteio.alunoAtual !== null) {
         return;
     }
@@ -102,12 +124,12 @@ btnSortear.addEventListener('click', () => {
             'Aluno sorteado! Confirme a presença ou indique que está ausente.';
     }
 
-    btnSortear.disabled = true;
+    btnSortear.hidden = true;
     btnConfirmar.disabled = false;
     btnAusente.disabled = false;
 
     atualizarInterface();
-});
+}
 
 
 // Confirmar presença
@@ -126,10 +148,11 @@ btnConfirmar.addEventListener('click', () => {
 
     liberarProximoSorteio();
     atualizarInterface();
+    popupSorteio.hidden = true;
 });
 
 
-// Marcar ausência e sortear novamente
+// Marcar ausência e permitir novo sorteio
 btnAusente.addEventListener('click', () => {
     if (!sorteio || sorteio.alunoAtual === null) {
         return;
@@ -140,9 +163,13 @@ btnAusente.addEventListener('click', () => {
     alunoSorteado.textContent = '—';
 
     mensagemSorteio.textContent =
-        `Aluno ${String(numero).padStart(2, '0')} marcado como ausente. Sorteie novamente.`;
+        `Aluno ${String(numero).padStart(2, '0')} marcado como ausente.`;
 
-    liberarProximoSorteio();
+    // Libera o sorteio seguinte sem fechar o popup.
+    btnSortear.hidden = false;
+    btnConfirmar.disabled = true;
+    btnAusente.disabled = true;
+
     atualizarInterface();
 });
 

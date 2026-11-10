@@ -418,3 +418,175 @@ button:disabled {
     color: #999;
     font-size: 11px;
 }
+/* Layout compacto da partida */
+.batalha-content {
+    height: calc(100vh - 56px);
+    min-height: 0;
+    padding: 14px 20px;
+    overflow: hidden;
+}
+
+.batalha-card {
+    max-width: 1250px;
+    height: 100%;
+    padding: 22px;
+}
+
+#tela-partida {
+    display: flex;
+    flex-direction: column;
+}
+
+#tela-partida[hidden] {
+    display: none;
+}
+
+#tela-partida .batalha-description {
+    margin-bottom: 14px;
+}
+
+.partida-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.6fr) minmax(280px, 0.8fr);
+    gap: 18px;
+    flex: 1;
+    min-height: 0;
+}
+
+/* Planisfério */
+.partida-layout .tabuleiro-container {
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+}
+
+.celula-tabuleiro {
+    min-height: clamp(34px, 6vh, 54px);
+}
+
+/* Painel lateral */
+.painel-lateral {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-height: 0;
+    min-width: 0;
+}
+
+.btn-abrir-sorteio {
+    width: 100%;
+    min-height: 46px;
+    font-size: 15px;
+}
+
+.painel-lateral .estatisticas-turma {
+    gap: 8px;
+}
+
+.painel-lateral .estatistica {
+    padding: 11px;
+}
+
+.painel-lateral .estatistica strong {
+    font-size: 22px;
+}
+
+.painel-lateral .historico-container {
+    margin-top: 0;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.painel-lateral .lista-historico {
+    max-height: none;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+/* Popup de sorteio */
+.popup-sorteio[hidden] {
+    display: none;
+}
+
+.popup-sorteio {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.78);
+}
+
+.popup-sorteio-conteudo {
+    width: 100%;
+    max-width: 440px;
+    padding: 24px;
+    background: #111;
+    border: 1px solid #34536a;
+    border-radius: 14px;
+    box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+}
+
+.popup-sorteio-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.popup-sorteio-header h2 {
+    font-size: 20px;
+}
+
+.btn-fechar-popup {
+    padding: 2px 9px;
+    background: transparent;
+    border: none;
+    color: #aaa;
+    font-size: 28px;
+}
+
+.btn-fechar-popup:hover {
+    color: white;
+}
+
+.popup-sorteio .sorteio-painel {
+    padding: 24px 16px;
+}
+
+.popup-sorteio .sorteio-acoes {
+    flex-direction: column;
+    margin-bottom: 0;
+}
+
+.popup-sorteio .sorteio-acoes button {
+    width: 100%;
+    min-height: 42px;
+}
+
+/* Em telas menores, permite rolagem em vez de comprimir demais */
+@media (max-width: 850px), (max-height: 650px) {
+    .batalha-content {
+        height: auto;
+        min-height: calc(100vh - 56px);
+        overflow-y: auto;
+        align-items: flex-start;
+    }
+
+    .batalha-card {
+        height: auto;
+    }
+
+    .partida-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .painel-lateral {
+        min-height: 400px;
+    }
+}
