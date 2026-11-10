@@ -332,3 +332,89 @@ button:disabled {
         width: 100%;
     }
 }
+
+/* Tabuleiro geográfico */
+.tabuleiro-container {
+    margin: 28px 0;
+    padding: 18px;
+    background-color: #171717;
+    border: 1px solid #303030;
+    border-radius: 10px;
+}
+
+.tabuleiro-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.tabuleiro-header h2 {
+    font-size: 19px;
+    margin-bottom: 5px;
+}
+
+.tabuleiro-header p {
+    color: #999;
+    font-size: 12px;
+}
+
+.tabuleiro-legenda {
+    color: #75cfff;
+    background-color: #1c3342;
+    padding: 6px 10px;
+    border-radius: 15px;
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.tabuleiro-scroll {
+    width: 100%;
+    overflow-x: auto;
+    padding-bottom: 6px;
+}
+
+.tabuleiro-geografico {
+    display: grid;
+    grid-template-columns: 34px repeat(12, minmax(38px, 1fr));
+    gap: 4px;
+    min-width: 550px;
+}
+
+.celula-eixo,
+.celula-cabecalho {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 32px;
+    color: #8fa6b5;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.celula-eixo {
+    color: #00aaff;
+}
+
+.celula-tabuleiro {
+    min-height: 48px;
+    background-color: #18384a;
+    border: 1px solid #28536b;
+    border-radius: 4px;
+    transition: background-color 0.2s;
+}
+
+.celula-tabuleiro:hover {
+    background-color: #245570;
+}
+
+.tabuleiro-orientacao {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 18px;
+    margin-top: 14px;
+    color: #999;
+    font-size: 11px;
+}

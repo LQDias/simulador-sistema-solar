@@ -3,6 +3,7 @@ import './style.css';
 import { SorteioTurma } from './sorteio.js';
 
 // Elementos das telas
+const tabuleiroGeografico = document.getElementById('tabuleiro-geografico');
 const formPreparacao = document.getElementById('form-preparacao');
 const inputQuantidade = document.getElementById('quantidade-alunos');
 const mensagemErro = document.getElementById('mensagem-erro');
@@ -70,6 +71,7 @@ formPreparacao.addEventListener('submit', (event) => {
     btnAusente.disabled = true;
 
     atualizarInterface();
+    construirTabuleiro();
 });
 
 
@@ -231,3 +233,51 @@ btnVoltarConfig.addEventListener('click', () => {
 
     inputQuantidade.focus();
 });
+
+// Construir o tabuleiro geográfico
+function construirTabuleiro() {
+    const colunas = 'ABCDEFGHIJKL';
+    const quantidadeLinhas = 6;
+
+    tabuleiroGeografico.replaceChildren();
+
+    // Canto superior esquerdo
+    const canto = document.createElement('div');
+    canto.className = 'celula-eixo';
+    canto.textContent = '°';
+
+    tabuleiroGeografico.appendChild(canto);
+
+    // Cabeçalho das colunas
+    for (const coluna of colunas) {
+        const cabecalho = document.createElement('div');
+
+        cabecalho.className = 'celula-cabecalho';
+        cabecalho.textContent = coluna;
+
+        tabuleiroGeografico.appendChild(cabecalho);
+    }
+
+    // Linhas e células
+    for (let linha = 1; linha <= quantidadeLinhas; linha++) {
+        const numeroLinha = document.createElement('div');
+
+        numeroLinha.className = 'celula-cabecalho';
+        numeroLinha.textContent = linha;
+
+        tabuleiroGeografico.appendChild(numeroLinha);
+
+        for (const coluna of colunas) {
+            const celula = document.createElement('div');
+
+            celula.className = 'celula-tabuleiro';
+            celula.dataset.coordenada = `${coluna}${linha}`;
+            celula.setAttribute(
+                'aria-label',
+                `Posição ${coluna}${linha}`
+            );
+
+            tabuleiroGeografico.appendChild(celula);
+        }
+    }
+}
