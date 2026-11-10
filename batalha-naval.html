@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -13,55 +12,188 @@
             Estações da Terra
         </a>
 
-        <a href="./batalha-naval.html"
-           class="nav-tab active"
-           aria-current="page">
+        <a
+            href="./batalha-naval.html"
+            class="nav-tab active"
+            aria-current="page"
+        >
             Batalha Naval
         </a>
     </nav>
 
     <main class="batalha-content">
-        <section class="batalha-card">
 
-            <p class="batalha-eyebrow">
-                JOGO EDUCATIVO
-            </p>
+        <!-- Tela de preparação -->
+        <section id="tela-preparacao" class="batalha-card">
+
+            <p class="batalha-eyebrow">JOGO EDUCATIVO</p>
 
             <h1>Batalha Naval Geográfica</h1>
 
             <p class="batalha-description">
-                Explore o planisfério, encontre embarcações
-                escondidas e teste seus conhecimentos de
-                geografia utilizando coordenadas geográficas.
+                Prepare sua turma para uma jornada de exploração
+                pelo planisfério. Encontre embarcações escondidas
+                e teste seus conhecimentos geográficos.
             </p>
 
-            <div class="batalha-topics">
+            <form id="form-preparacao">
 
-                <div class="batalha-topic">
-                    <h3>Coordenadas</h3>
-                    <p>Aprenda a localizar posições usando latitude e longitude.</p>
+                <label for="quantidade-alunos">
+                    Quantidade de alunos na turma
+                </label>
+
+                <input
+                    type="number"
+                    id="quantidade-alunos"
+                    min="1"
+                    step="1"
+                    placeholder="Ex: 30"
+                    required
+                />
+
+                <p class="form-help">
+                    Os alunos serão identificados pelo número da chamada.
+                </p>
+
+                <p
+                    id="mensagem-erro"
+                    class="mensagem-erro"
+                    aria-live="polite"
+                ></p>
+
+                <button type="submit" class="btn-primary">
+                    Iniciar partida
+                </button>
+
+            </form>
+        </section>
+
+        <!-- Tela da partida -->
+        <section id="tela-partida" class="batalha-card" hidden>
+
+            <div class="partida-header">
+                <div>
+                    <p class="batalha-eyebrow">MISSÃO COLETIVA</p>
+                    <h1>Batalha Naval Geográfica</h1>
                 </div>
 
-                <div class="batalha-topic">
-                    <h3>Oceanos e mares</h3>
-                    <p>Descubra em quais regiões marítimas estão os navios.</p>
+                <span id="indicador-ciclo" class="ciclo-indicador">
+                    Ciclo 1
+                </span>
+            </div>
+
+            <p class="batalha-description">
+                Cada aluno participa uma vez por ciclo.
+                Se estiver ausente, o professor pode passar
+                para o próximo número.
+            </p>
+
+            <!-- Número sorteado -->
+            <div class="sorteio-painel">
+
+                <p class="sorteio-legenda">
+                    NÚMERO DA CHAMADA
+                </p>
+
+                <strong id="aluno-sorteado" aria-live="polite">
+                    —
+                </strong>
+
+                <p id="mensagem-sorteio" class="mensagem-sorteio">
+                    Sorteie um aluno para começar.
+                </p>
+
+            </div>
+
+            <!-- Ações -->
+            <div class="sorteio-acoes">
+
+                <button
+                    type="button"
+                    id="btn-sortear"
+                    class="btn-primary"
+                >
+                    Sortear aluno
+                </button>
+
+                <button
+                    type="button"
+                    id="btn-confirmar"
+                    class="btn-success"
+                    disabled
+                >
+                    Confirmar presença
+                </button>
+
+                <button
+                    type="button"
+                    id="btn-ausente"
+                    class="btn-secondary"
+                    disabled
+                >
+                    Aluno ausente — sortear novamente
+                </button>
+
+            </div>
+
+            <!-- Estatísticas -->
+            <div class="estatisticas-turma">
+
+                <div class="estatistica">
+                    <strong id="total-participaram">0</strong>
+                    <span>Já participaram</span>
                 </div>
 
-                <div class="batalha-topic">
-                    <h3>Exploração</h3>
-                    <p>Participe das missões e ajude a turma a completar os desafios.</p>
+                <div class="estatistica">
+                    <strong id="total-disponiveis">0</strong>
+                    <span>Aguardando sorteio</span>
+                </div>
+
+                <div class="estatistica">
+                    <strong id="total-ausentes">0</strong>
+                    <span>Pulados por ausência</span>
                 </div>
 
             </div>
 
-            <p class="batalha-status">
-                A preparação da partida será implementada na próxima etapa.
-            </p>
+            <!-- Histórico -->
+            <section
+                class="historico-container"
+                aria-labelledby="titulo-historico"
+            >
+
+                <div class="historico-header">
+                    <h2 id="titulo-historico">
+                        Histórico de sorteios
+                    </h2>
+
+                    <span id="total-sorteios">0 registros</span>
+                </div>
+
+                <ul id="lista-historico" class="lista-historico">
+                    <li class="historico-vazio">
+                        Nenhum aluno sorteado ainda.
+                    </li>
+                </ul>
+
+            </section>
+
+            <button
+                type="button"
+                id="btn-voltar-config"
+                class="btn-link"
+            >
+                Encerrar e voltar à configuração
+            </button>
 
         </section>
+
     </main>
 
-    <script type="module" src="./src/batalha-naval/main.js"></script>
+    <script
+        type="module"
+        src="./src/batalha-naval/main.js"
+    ></script>
 
 </body>
 </html>

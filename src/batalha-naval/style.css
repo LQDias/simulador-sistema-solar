@@ -1,6 +1,37 @@
+/* Navegação */
+.top-nav {
+    height: 56px;
+    display: flex;
+    align-items: stretch;
+    gap: 8px;
+    padding: 0 20px;
+    background-color: #0b0b0b;
+    border-bottom: 1px solid #222;
+}
 
+.nav-tab {
+    display: flex;
+    align-items: center;
+    padding: 0 16px;
+    color: #aaa;
+    text-decoration: none;
+    border-bottom: 3px solid transparent;
+    font-size: 14px;
+}
+
+.nav-tab:hover {
+    color: white;
+    background-color: #161616;
+}
+
+.nav-tab.active {
+    color: white;
+    border-bottom-color: #00aaff;
+}
+
+/* Conteúdo principal */
 .batalha-content {
-    height: calc(100vh - 56px);
+    min-height: calc(100vh - 56px);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -11,10 +42,14 @@
 .batalha-card {
     width: 100%;
     max-width: 850px;
-    padding: 40px;
+    padding: 36px;
     background-color: #111;
     border: 1px solid #292929;
     border-radius: 12px;
+}
+
+.batalha-card[hidden] {
+    display: none;
 }
 
 .batalha-eyebrow {
@@ -26,59 +61,274 @@
 }
 
 .batalha-card h1 {
-    font-size: 32px;
+    font-size: 30px;
     margin-bottom: 16px;
 }
 
 .batalha-description {
     color: #aaa;
     line-height: 1.6;
+    margin-bottom: 28px;
 }
 
-.batalha-topics {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    margin: 30px 0;
+/* Formulário */
+#form-preparacao {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
 }
 
-.batalha-topic {
-    padding: 18px;
+#form-preparacao label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+#quantidade-alunos {
+    width: 100%;
+    padding: 12px;
     background-color: #1a1a1a;
-    border: 1px solid #303030;
-    border-radius: 8px;
-}
-
-.batalha-topic h3 {
-    color: #00aaff;
+    border: 1px solid #444;
+    border-radius: 6px;
+    color: white;
     font-size: 16px;
-    margin-bottom: 10px;
 }
 
-.batalha-topic p {
+#quantidade-alunos:focus {
+    outline: none;
+    border-color: #00aaff;
+}
+
+#quantidade-alunos[aria-invalid="true"] {
+    border-color: #ef4444;
+}
+
+.form-help {
+    color: #888;
+    font-size: 12px;
+}
+
+.mensagem-erro {
+    color: #ef4444;
+    font-size: 13px;
+    min-height: 16px;
+}
+
+/* Botões */
+button {
+    padding: 11px 16px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background-color: #0077bb;
+    border: 1px solid #0088cc;
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: #0088cc;
+}
+
+.btn-success {
+    background-color: #176b42;
+    border: 1px solid #238653;
+}
+
+.btn-success:hover:not(:disabled) {
+    background-color: #218653;
+}
+
+.btn-secondary {
+    background-color: #333;
+    border: 1px solid #555;
+}
+
+.btn-link {
+    margin-top: 24px;
+    background: transparent;
+    border: none;
     color: #aaa;
+    padding-left: 0;
+}
+
+.btn-link:hover {
+    color: white;
+    background: transparent;
+}
+
+/* Cabeçalho da partida */
+.partida-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.ciclo-indicador {
+    background: #1c3342;
+    color: #75cfff;
+    border-radius: 20px;
+    padding: 7px 12px;
+    font-size: 12px;
+    white-space: nowrap;
+}
+
+/* Painel do sorteio */
+.sorteio-painel {
+    text-align: center;
+    padding: 26px 18px;
+    background: radial-gradient(circle at top, #15334a, #15191d 70%);
+    border: 1px solid #25465b;
+    border-radius: 10px;
+}
+
+.sorteio-legenda {
+    color: #9ab4c5;
+    font-size: 11px;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+#aluno-sorteado {
+    display: block;
+    color: #fff;
+    font-size: clamp(56px, 12vw, 82px);
+    line-height: 1.2;
+    margin: 8px 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.mensagem-sorteio {
+    color: #b8c8d2;
     font-size: 13px;
     line-height: 1.5;
 }
 
-.batalha-status {
-    color: #aaa;
-    font-size: 13px;
-    border-left: 3px solid #00aaff;
-    padding: 10px 14px;
-    background-color: #1a1a1a;
+.sorteio-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 16px 0 22px;
 }
 
+/* Estatísticas */
+.estatisticas-turma {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+}
+
+.estatistica {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px;
+    background: #1a1a1a;
+    border: 1px solid #303030;
+    border-radius: 8px;
+}
+
+.estatistica strong {
+    color: #00aaff;
+    font-size: 26px;
+    font-variant-numeric: tabular-nums;
+}
+
+.estatistica span {
+    color: #aaa;
+    font-size: 12px;
+}
+
+/* Histórico */
+.historico-container {
+    margin-top: 26px;
+}
+
+.historico-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+}
+
+.historico-header h2 {
+    font-size: 17px;
+}
+
+.historico-header > span {
+    color: #888;
+    font-size: 12px;
+}
+
+.lista-historico {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+    max-height: 220px;
+    overflow-y: auto;
+}
+
+.historico-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    background: #1a1a1a;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.historico-status {
+    font-size: 11px;
+    font-weight: bold;
+}
+
+.status-aguardando {
+    color: #facc15;
+}
+
+.status-participou {
+    color: #4ade80;
+}
+
+.status-ausente {
+    color: #f87171;
+}
+
+.historico-vazio {
+    color: #888;
+    font-size: 13px;
+    padding: 12px 0;
+}
+
+/* Responsividade */
 @media (max-width: 650px) {
     .batalha-card {
-        padding: 24px;
+        padding: 22px;
     }
 
     .batalha-card h1 {
-        font-size: 25px;
+        font-size: 24px;
     }
 
-    .batalha-topics {
+    .estatisticas-turma {
         grid-template-columns: 1fr;
+    }
+
+    .sorteio-acoes {
+        flex-direction: column;
+    }
+
+    .sorteio-acoes button {
+        width: 100%;
     }
 }
