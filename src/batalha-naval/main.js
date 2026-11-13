@@ -1,6 +1,8 @@
 import '../style.css';
 import './style.css';
+
 import { SorteioTurma } from './sorteio.js';
+import { posicionarEmbarcacoes } from './embarcacoes.js';
 
 // Elementos das telas
 const tabuleiroGeografico = document.getElementById('tabuleiro-geografico');
@@ -49,7 +51,10 @@ const listaHistorico = document.getElementById('lista-historico');
 
 // Estado da partida
 let sorteio = null;
+let frota = [];
 let casasRespondidas = new Map();
+let acertosPorNavio = new Map();
+let partidaFinalizada = false;
 
 
 // Iniciar uma nova partida
@@ -74,7 +79,48 @@ formPreparacao.addEventListener('submit', (event) => {
     }
 
     sorteio = new SorteioTurma(quantidade);
+
+    // Gerar uma nova frota aleatória para a partida.
+    frota = posicionarEmbarcacoes();
+    
+    // Exibir a distribuição da frota no console (modo de teste)
+    console.group('🚢 Distribuição das embarcações');
+
+    frota.forEach((navio) => {
+        const casas = navio.casas.map((casa) => {
+            const latitude = 75 - casa.linha * 30;
+            const longitude = -165 + casa.coluna * 30;
+
+            return {
+                linha: casa.linha,
+                coluna: casa.coluna,
+                latitude: formatarLatitude(latitude),
+                longitude: formatarLongitude(longitude)
+            };
+        });
+
+        console.group(
+            `${navio.id} | ${navio.tamanho} células | ${navio.orientacao}`
+        );
+
+        console.table(casas);
+
+        console.groupEnd();
+    });
+
+    console.groupEnd();
+
+    // Reiniciar os registros de tentativas e acertos.
     casasRespondidas.clear();
+
+    acertosPorNavio = new Map(
+        frota.map((navio) => [navio.id, new Set()])
+    );
+
+    partidaFinalizada = false;
+
+    btnAbrirCoordenadas.disabled = false;
+    btnAbrirCoordenadas.textContent = 'Informar coordenadas';
 
     mensagemErro.textContent = '';
     inputQuantidade.removeAttribute('aria-invalid');
@@ -115,10 +161,12 @@ btnAbrirSorteio.addEventListener('click', () => {
     }
 });
 
+
 // Fechar gerenciamento da turma
 btnFecharSorteio.addEventListener('click', () => {
     popupSorteio.close();
 });
+
 
 // Sortear aluno
 btnSortear.addEventListener('click', realizarSorteio);
@@ -148,6 +196,7 @@ function realizarSorteio() {
     atualizarInterface();
 }
 
+
 // Confirmar presença
 btnConfirmar.addEventListener('click', () => {
     if (!sorteio || sorteio.alunoAtual === null) {
@@ -170,6 +219,7 @@ btnConfirmar.addEventListener('click', () => {
 
     atualizarInterface();
 });
+
 
 // Marcar ausência
 btnAusente.addEventListener('click', () => {
@@ -257,8 +307,11 @@ function renderizarHistorico() {
 
 // Abrir formulário de coordenadas
 btnAbrirCoordenadas.addEventListener('click', () => {
-    mensagemCoordenadas.textContent = '';
+    if (partidaFinalizada) {
+        return;
+    }
 
+    mensagemCoordenadas.textContent = '';
     formCoordenadas.reset();
 
     if (!popupCoordenadas.open) {
@@ -306,12 +359,8 @@ function formatarLongitude(valor) {
 }
 
 
-// Localizar a célula correspondente a uma coordenada
-
+// Localizar a célula mais próxima das coordenadas informadas
 function localizarCelula(latitude, longitude) {
-    // Identifica a linha e a coluna que contêm o ponto informado.
-    // Cada célula representa uma área de 30° × 30°.
-
     const indiceLinha = Math.min(
         5,
         Math.floor((90 - latitude) / 30)
@@ -322,11 +371,10 @@ function localizarCelula(latitude, longitude) {
         Math.floor((longitude + 180) / 30)
     );
 
-    // Calcula o centro da célula encontrada.
     const latitudeCentro = 75 - indiceLinha * 30;
     const longitudeCentro = -165 + indiceColuna * 30;
 
-    const acertou =
+    const coordenadaExata =
         latitude === latitudeCentro &&
         longitude === longitudeCentro;
 
@@ -335,14 +383,146 @@ function localizarCelula(latitude, longitude) {
         indiceColuna,
         latitudeCentro,
         longitudeCentro,
-        acertou
+        coordenadaExata
     };
+}
+
+
+// Verificar se uma célula pertence a um navio
+function encontrarNavio(linha, coluna) {
+    return frota.find((navio) =>
+        navio.casas.some((casa) =>
+            casa.linha === linha &&
+            casa.coluna === coluna
+        )
+    );
+}
+
+
+// Verificar se um navio foi completamente atingido
+function navioFoiAfundado(navio) {
+    const acertos = acertosPorNavio.get(navio.id);
+
+    return acertos.size === navio.tamanho;
+}
+
+
+// Verificar se toda a frota foi encontrada
+function frotaFoiDestruida() {
+    return frota.every((navio) => navioFoiAfundado(navio));
+}
+
+
+// Processar uma tentativa no tabuleiro
+function processarTentativa(resultado) {
+    const chaveCelula =
+        `${resultado.indiceLinha}-${resultado.indiceColuna}`;
+
+    // Não permitir repetir uma tentativa.
+    if (casasRespondidas.has(chaveCelula)) {
+        mensagemCoordenadas.textContent =
+            'Essa célula já foi explorada. Informe outra coordenada.';
+        return false;
+    }
+
+    const celulas =
+        tabuleiroGeografico.querySelectorAll('.celula-tabuleiro');
+
+    const indiceCelula =
+        resultado.indiceLinha * 12 + resultado.indiceColuna;
+
+    const celula = celulas[indiceCelula];
+
+    if (!celula) {
+        mensagemCoordenadas.textContent =
+            'Não foi possível localizar essa posição.';
+        return false;
+    }
+
+    const navio = encontrarNavio(
+        resultado.indiceLinha,
+        resultado.indiceColuna
+    );
+
+    const centroLatitude =
+        formatarLatitude(resultado.latitudeCentro);
+
+    const centroLongitude =
+        formatarLongitude(resultado.longitudeCentro);
+
+    const centroFormatado =
+        `${centroLatitude}, ${centroLongitude}`;
+
+    const informacaoAproximada = resultado.coordenadaExata
+        ? ''
+        : `Coordenada aproximada para o centro da célula (${centroFormatado}). `;
+
+    let mensagemResultado;
+
+    if (navio) {
+        // Registrar acerto na embarcação.
+        const acertos = acertosPorNavio.get(navio.id);
+
+        acertos.add(chaveCelula);
+
+        celula.classList.add('respondida-correta');
+
+        celula.setAttribute(
+            'aria-label',
+            `${centroFormatado}. Embarcação atingida.`
+        );
+
+        casasRespondidas.set(chaveCelula, 'acerto');
+
+        if (navioFoiAfundado(navio)) {
+            mensagemResultado =
+                'Embarcação afundada!';
+        } else {
+            mensagemResultado =
+                'Você atingiu uma embarcação!';
+        }
+
+    } else {
+        // Registrar tentativa na água.
+        celula.classList.add('respondida-incorreta');
+
+        celula.setAttribute(
+            'aria-label',
+            `${centroFormatado}. Água.`
+        );
+
+        casasRespondidas.set(chaveCelula, 'agua');
+
+        mensagemResultado = 'Água! Nenhuma embarcação nessa posição.';
+    }
+
+    celula.disabled = true;
+
+    // Verificar se toda a frota foi encontrada.
+    if (frotaFoiDestruida()) {
+        partidaFinalizada = true;
+
+        mensagemResultado =
+            'Toda a frota foi encontrada! Parabéns, missão concluída!';
+
+        btnAbrirCoordenadas.disabled = true;
+        btnAbrirCoordenadas.textContent = 'Partida concluída';
+    }
+
+    coordenadaSelecionada.textContent =
+        informacaoAproximada + mensagemResultado;
+
+    return true;
 }
 
 
 // Registrar uma resposta
 formCoordenadas.addEventListener('submit', (event) => {
     event.preventDefault();
+
+    if (partidaFinalizada) {
+        return;
+    }
 
     const valorLatitude = inputLatitude.value.trim();
     const valorLongitude = inputLongitude.value.trim();
@@ -387,63 +567,13 @@ formCoordenadas.addEventListener('submit', (event) => {
 
     const resultado = localizarCelula(latitude, longitude);
 
-    const chaveCelula =
-        `${resultado.indiceLinha}-${resultado.indiceColuna}`;
+    const sucesso = processarTentativa(resultado);
 
-    // Impedir que uma célula seja respondida novamente.
-    if (casasRespondidas.has(chaveCelula)) {
-        mensagemCoordenadas.textContent =
-            'Essa célula já foi respondida. Informe outra coordenada.';
-        return;
+    // Só fechar o formulário quando a tentativa for registrada.
+    if (sucesso) {
+        fecharFormularioCoordenadas();
     }
-
-    const celulas = tabuleiroGeografico.querySelectorAll('.celula-tabuleiro');
-
-    const indiceCelula =
-        resultado.indiceLinha * 12 + resultado.indiceColuna;
-
-    const celula = celulas[indiceCelula];
-
-    if (!celula) {
-        mensagemCoordenadas.textContent =
-            'Não foi possível localizar essa posição.';
-        return;
-    }
-
-    const centroLatitude = formatarLatitude(resultado.latitudeCentro);
-    const centroLongitude = formatarLongitude(resultado.longitudeCentro);
-
-    if (resultado.acertou) {
-        celula.classList.add('respondida-correta');
-
-        celula.setAttribute(
-            'aria-label',
-            `Centro ${centroLatitude}, ${centroLongitude}. Coordenada exata.`
-        );
-
-        coordenadaSelecionada.textContent =
-            `Coordenada exata! Célula localizada: ${centroLatitude}, ${centroLongitude}.`;
-
-        casasRespondidas.set(chaveCelula, 'correta');
-    } else {
-        celula.classList.add('respondida-aproximada');
-
-        celula.setAttribute(
-            'aria-label',
-            `Centro ${centroLatitude}, ${centroLongitude}. Coordenada aproximada.`
-        );
-
-        coordenadaSelecionada.textContent =
-            `A coordenada informada foi aproximada para o centro da célula: ${centroLatitude}, ${centroLongitude}.`;
-
-        casasRespondidas.set(chaveCelula, 'aproximada');
-    }
-
-    celula.disabled = true;
-
-    fecharFormularioCoordenadas();
 });
-
 
 
 // Encerrar a partida
@@ -457,7 +587,10 @@ btnVoltarConfig.addEventListener('click', () => {
     }
 
     sorteio = null;
+    frota = [];
     casasRespondidas.clear();
+    acertosPorNavio.clear();
+    partidaFinalizada = false;
 
     if (popupSorteio.open) {
         popupSorteio.close();
@@ -484,7 +617,7 @@ function construirTabuleiro() {
     const quantidadeLinhas = 6;
     const quantidadeColunas = 12;
 
-    // Criar os rótulos de longitude da borda superior.
+    // Rótulos de longitude da borda superior.
     const cantoSuperior = document.createElement('div');
     cantoSuperior.className = 'celula-eixo';
     tabuleiroGeografico.appendChild(cantoSuperior);
@@ -511,7 +644,9 @@ function construirTabuleiro() {
         // Latitude na borda esquerda.
         const rotuloEsquerdo = document.createElement('div');
 
-        rotuloEsquerdo.className = 'celula-eixo coordenada-borda-latitude';
+        rotuloEsquerdo.className =
+            'celula-eixo coordenada-borda-latitude';
+
         rotuloEsquerdo.textContent = latitudeFormatada;
 
         tabuleiroGeografico.appendChild(rotuloEsquerdo);
@@ -543,13 +678,15 @@ function construirTabuleiro() {
         // Latitude na borda direita.
         const rotuloDireito = document.createElement('div');
 
-        rotuloDireito.className = 'celula-eixo coordenada-borda-latitude';
+        rotuloDireito.className =
+            'celula-eixo coordenada-borda-latitude';
+
         rotuloDireito.textContent = latitudeFormatada;
 
         tabuleiroGeografico.appendChild(rotuloDireito);
     }
 
-    // Criar os rótulos de longitude da borda inferior.
+    // Rótulos de longitude da borda inferior.
     const cantoInferior = document.createElement('div');
     cantoInferior.className = 'celula-eixo';
     tabuleiroGeografico.appendChild(cantoInferior);
