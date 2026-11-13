@@ -806,3 +806,67 @@ btnFimConfig.addEventListener('click', () => {
 
     inputQuantidade.focus();
 });
+
+// Função temporária para testar a partida completa pelo Console
+window.testarBatalhaNaval = function () {
+    // Iniciar uma nova partida com 30 alunos
+    inputQuantidade.value = 30;
+    formPreparacao.requestSubmit();
+
+    const casasNavios = new Set();
+
+    // Registrar todas as posições ocupadas pelos navios
+    frota.forEach((navio) => {
+        navio.casas.forEach((casa) => {
+            casasNavios.add(`${casa.linha}-${casa.coluna}`);
+        });
+    });
+
+    // Criar uma lista de todas as casas vazias
+    const casasAgua = [];
+
+    for (let linha = 0; linha < 6; linha++) {
+        for (let coluna = 0; coluna < 12; coluna++) {
+            const chave = `${linha}-${coluna}`;
+
+            if (!casasNavios.has(chave)) {
+                casasAgua.push({ linha, coluna });
+            }
+        }
+    }
+
+    // Embaralhar as casas de água
+    casasAgua.sort(() => Math.random() - 0.5);
+
+    // Escolher 8 erros artificiais
+    const erros = casasAgua.slice(0, 8);
+
+    // Registrar os erros
+    erros.forEach((casa) => {
+        processarTentativa({
+            indiceLinha: casa.linha,
+            indiceColuna: casa.coluna,
+            latitudeCentro: 75 - casa.linha * 30,
+            longitudeCentro: -165 + casa.coluna * 30,
+            coordenadaExata: true
+        });
+    });
+
+    // Registrar os acertos em todas as embarcações
+    frota.forEach((navio) => {
+        navio.casas.forEach((casa) => {
+            processarTentativa({
+                indiceLinha: casa.linha,
+                indiceColuna: casa.coluna,
+                latitudeCentro: 75 - casa.linha * 30,
+                longitudeCentro: -165 + casa.coluna * 30,
+                coordenadaExata: true
+            });
+        });
+    });
+
+    console.log('Teste concluído!');
+    console.log('Erros artificiais:', erros.length);
+    console.log('Acertos:', casasNavios.size);
+    console.log('Total de tentativas:', erros.length + casasNavios.size);
+};
