@@ -909,3 +909,58 @@ button:disabled {
         height: 260px;
     }
 }
+
+/* Painel de dicas geográficas */
+.painel-dica {
+    padding: 14px 16px;
+    margin: 8px 0;
+    background: linear-gradient(135deg, #142b3a, #17212a);
+    border: 1px solid #31536a;
+    border-left: 4px solid #00aaff;
+    border-radius: 8px;
+    flex-shrink: 0;
+}
+
+.dica-cabecalho {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 7px;
+}
+
+.dica-categoria {
+    color: #75cfff;
+    font-size: 10px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+}
+
+.dica-progresso {
+    color: #9aaebb;
+    font-size: 11px;
+}
+
+.painel-dica h2 {
+    color: #fff;
+    font-size: 18px;
+    margin-bottom: 6px;
+}
+
+.dica-descricao {
+    color: #c3d1da;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.dica-orientacao {
+    color: #75cfff;
+    font-size: 12px;
+    line-height: 1.5;
+    margin-top: 7px;
+    font-weight: bold;
+}
+
+.painel-dica.dica-concluida {
+    border-left-color: #4ade80;
+}

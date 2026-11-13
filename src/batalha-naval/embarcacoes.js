@@ -9,122 +9,54 @@ export const FROTA = [
     { id: 'pequeno-2', tamanho: 2 }
 ];
 
-// Embaralhar uma lista usando Fisher-Yates
-function embaralhar(lista) {
-    const resultado = [...lista];
-
-    for (let i = resultado.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-
-        [resultado[i], resultado[j]] =
-            [resultado[j], resultado[i]];
+// Posições geográficas associadas às dicas.
+// Cada célula representa uma área de 30° × 30°.
+const POSICOES_INICIAIS = [
+    {
+        id: 'grande',
+        orientacao: 'vertical',
+        casas: [
+            { linha: 1, coluna: 0 },
+            { linha: 2, coluna: 0 },
+            { linha: 3, coluna: 0 },
+            { linha: 4, coluna: 0 }
+        ]
+    },
+    {
+        id: 'medio-1',
+        orientacao: 'horizontal',
+        casas: [
+            { linha: 2, coluna: 3 },
+            { linha: 2, coluna: 4 },
+            { linha: 2, coluna: 5 }
+        ]
+    },
+    {
+        id: 'medio-2',
+        orientacao: 'horizontal',
+        casas: [
+            { linha: 3, coluna: 7 },
+            { linha: 3, coluna: 8 },
+            { linha: 3, coluna: 9 }
+        ]
+    },
+    {
+        id: 'pequeno-1',
+        orientacao: 'horizontal',
+        casas: [
+            { linha: 2, coluna: 6 },
+            { linha: 2, coluna: 7 }
+        ]
+    },
+    {
+        id: 'pequeno-2',
+        orientacao: 'horizontal',
+        casas: [
+            { linha: 2, coluna: 10 },
+            { linha: 2, coluna: 11 }
+        ]
     }
-
-    return resultado;
-}
-
-// Gerar todas as posições possíveis para um navio
-function gerarPosicoes(tamanho) {
-    const posicoes = [];
-
-    for (let linha = 0; linha < LINHAS; linha++) {
-        for (let coluna = 0; coluna < COLUNAS; coluna++) {
-
-            // Orientação horizontal
-            if (coluna + tamanho <= COLUNAS) {
-                const casas = [];
-
-                for (let i = 0; i < tamanho; i++) {
-                    casas.push({
-                        linha,
-                        coluna: coluna + i
-                    });
-                }
-
-                posicoes.push({
-                    orientacao: 'horizontal',
-                    casas
-                });
-            }
-
-            // Orientação vertical
-            if (linha + tamanho <= LINHAS) {
-                const casas = [];
-
-                for (let i = 0; i < tamanho; i++) {
-                    casas.push({
-                        linha: linha + i,
-                        coluna
-                    });
-                }
-
-                posicoes.push({
-                    orientacao: 'vertical',
-                    casas
-                });
-            }
-        }
-    }
-
-    return embaralhar(posicoes);
-}
-
-// Verificar se uma posição não ocupa casas já utilizadas
-function posicaoDisponivel(posicao, ocupadas) {
-    return posicao.casas.every((casa) => {
-        const chave = `${casa.linha},${casa.coluna}`;
-
-        return !ocupadas.has(chave);
-    });
-}
-
-// Posicionar a frota usando tentativa e retrocesso
-function distribuir(frota, indice, ocupadas, resultado) {
-    if (indice === frota.length) {
-        return true;
-    }
-
-    const navio = frota[indice];
-    const possibilidades = gerarPosicoes(navio.tamanho);
-
-    for (const posicao of possibilidades) {
-        if (!posicaoDisponivel(posicao, ocupadas)) {
-            continue;
-        }
-
-        const chaves = posicao.casas.map(
-            (casa) => `${casa.linha},${casa.coluna}`
-        );
-
-        chaves.forEach((chave) => ocupadas.add(chave));
-
-        resultado.push({
-            id: navio.id,
-            tamanho: navio.tamanho,
-            orientacao: posicao.orientacao,
-            casas: posicao.casas
-        });
-
-        if (
-            distribuir(
-                frota,
-                indice + 1,
-                ocupadas,
-                resultado
-            )
-        ) {
-            return true;
-        }
-
-        // Se não foi possível posicionar os próximos navios,
-        // desfazemos a posição atual e tentamos outra.
-        resultado.pop();
-
-        chaves.forEach((chave) => ocupadas.delete(chave));
-    }
-
-    return false;
-}
+];
 
 // Validar a distribuição completa
 export function validarFrota(frota) {
@@ -196,23 +128,26 @@ export function validarFrota(frota) {
     return true;
 }
 
-// Criar uma distribuição aleatória da frota
+// Criar a distribuição da frota
 export function posicionarEmbarcacoes() {
-    const resultado = [];
-    const ocupadas = new Set();
+    const frota = POSICOES_INICIAIS.map((posicao) => {
+        const definicao = FROTA.find(
+            (navio) => navio.id === posicao.id
+        );
 
-    const sucesso = distribuir(
-        FROTA,
-        0,
-        ocupadas,
-        resultado
-    );
+        return {
+            id: definicao.id,
+            tamanho: definicao.tamanho,
+            orientacao: posicao.orientacao,
+            casas: posicao.casas.map((casa) => ({ ...casa }))
+        };
+    });
 
-    if (!sucesso || !validarFrota(resultado)) {
+    if (!validarFrota(frota)) {
         throw new Error(
-            'Não foi possível gerar uma distribuição válida da frota.'
+            'A distribuição das embarcações é inválida.'
         );
     }
 
-    return resultado;
+    return frota;
 }
