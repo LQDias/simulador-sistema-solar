@@ -4,6 +4,18 @@ import './style.css';
 import { SorteioTurma } from './sorteio.js';
 import { posicionarEmbarcacoes } from './embarcacoes.js';
 
+// Tela de fim de jogo
+const telaFim = document.getElementById('tela-fim');
+const tabuleiroFinal = document.getElementById('tabuleiro-final');
+
+const resultadoNavios = document.getElementById('resultado-navios');
+const resultadoTentativas = document.getElementById('resultado-tentativas');
+const resultadoAcertos = document.getElementById('resultado-acertos');
+const resultadoErros = document.getElementById('resultado-erros');
+
+const btnJogarNovamente = document.getElementById('btn-jogar-novamente');
+const btnFimConfig = document.getElementById('btn-fim-config');
+
 // Elementos das telas
 const tabuleiroGeografico = document.getElementById('tabuleiro-geografico');
 const coordenadaSelecionada = document.getElementById('coordenada-selecionada');
@@ -502,6 +514,8 @@ function processarTentativa(resultado) {
     if (frotaFoiDestruida()) {
         partidaFinalizada = true;
 
+        finalizarPartida();
+
         mensagemResultado =
             'Toda a frota foi encontrada! Parabéns, missão concluída!';
 
@@ -705,3 +719,90 @@ function construirTabuleiro() {
     cantoInferiorDireito.className = 'celula-eixo';
     tabuleiroGeografico.appendChild(cantoInferiorDireito);
 }
+
+// Encerrar e apresentar os resultados da partida
+function finalizarPartida() {
+    const totalNavios = frota.length;
+    const totalAcertos = frota.reduce(
+        (total, navio) => total + navio.tamanho,
+        0
+    );
+
+    const totalTentativas = casasRespondidas.size;
+    const totalErros = totalTentativas - totalAcertos;
+
+    resultadoNavios.textContent =
+        `${totalNavios}/${totalNavios}`;
+
+    resultadoTentativas.textContent = totalTentativas;
+    resultadoAcertos.textContent = totalAcertos;
+    resultadoErros.textContent = totalErros;
+
+    revelarFrota();
+
+    telaPartida.hidden = true;
+    telaFim.hidden = false;
+}
+
+
+// Mostrar a posição de todas as embarcações
+function revelarFrota() {
+    tabuleiroFinal.replaceChildren();
+
+    // Copiar o tabuleiro atual, preservando as coordenadas das bordas.
+    const tabuleiroRevelado = tabuleiroGeografico.cloneNode(true);
+
+    const celulas =
+        tabuleiroRevelado.querySelectorAll('.celula-tabuleiro');
+
+    frota.forEach((navio) => {
+        navio.casas.forEach((casa) => {
+            const indice = casa.linha * 12 + casa.coluna;
+            const celula = celulas[indice];
+
+            if (celula) {
+                celula.classList.remove(
+                    'respondida-correta',
+                    'respondida-incorreta'
+                );
+
+                celula.classList.add('navio-revelado');
+                celula.disabled = true;
+
+                celula.setAttribute(
+                    'aria-label',
+                    'Embarcação revelada'
+                );
+            }
+        });
+    });
+
+    tabuleiroFinal.replaceChildren(...tabuleiroRevelado.children);
+}
+
+
+// Jogar novamente com a mesma quantidade de alunos
+btnJogarNovamente.addEventListener('click', () => {
+    telaFim.hidden = true;
+    telaPreparacao.hidden = false;
+
+    // O formulário inicia uma nova partida e gera outra frota.
+    formPreparacao.requestSubmit();
+});
+
+
+// Voltar à configuração
+btnFimConfig.addEventListener('click', () => {
+    telaFim.hidden = true;
+    telaPreparacao.hidden = false;
+
+    sorteio = null;
+    frota = [];
+
+    casasRespondidas.clear();
+    acertosPorNavio.clear();
+
+    partidaFinalizada = false;
+
+    inputQuantidade.focus();
+});
