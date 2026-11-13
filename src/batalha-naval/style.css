@@ -7,6 +7,7 @@
     padding: 0 20px;
     background-color: #0b0b0b;
     border-bottom: 1px solid #222;
+    flex-shrink: 0;
 }
 
 .nav-tab {
@@ -29,14 +30,15 @@
     border-bottom-color: #00aaff;
 }
 
-/* Conteúdo principal */
+/* Configuração geral */
 .batalha-content {
     height: calc(100vh - 56px);
     min-height: 0;
+    box-sizing: border-box;
     display: flex;
     justify-content: center;
-    align-items: center;
-    padding: 14px 20px;
+    align-items: stretch;
+    padding: 12px 20px;
     overflow: hidden;
 }
 
@@ -44,7 +46,9 @@
     width: 100%;
     max-width: 1250px;
     height: 100%;
-    padding: 22px;
+    min-height: 0;
+    box-sizing: border-box;
+    padding: 18px 20px;
     background-color: #111;
     border: 1px solid #292929;
     border-radius: 12px;
@@ -56,24 +60,24 @@
 
 .batalha-eyebrow {
     color: #00aaff;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: bold;
     letter-spacing: 2px;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
 }
 
 .batalha-card h1 {
-    font-size: 30px;
-    margin-bottom: 16px;
+    font-size: 27px;
+    margin-bottom: 10px;
 }
 
 .batalha-description {
     color: #aaa;
-    line-height: 1.6;
-    margin-bottom: 28px;
+    line-height: 1.5;
+    margin-bottom: 16px;
 }
 
-/* Formulário de preparação */
+/* Preparação */
 #form-preparacao {
     display: flex;
     flex-direction: column;
@@ -152,11 +156,11 @@ button:disabled {
 }
 
 .btn-link {
-    margin-top: 24px;
+    margin-top: 8px;
     background: transparent;
     border: none;
     color: #aaa;
-    padding-left: 0;
+    padding: 5px 0;
 }
 
 .btn-link:hover {
@@ -164,10 +168,12 @@ button:disabled {
     background: transparent;
 }
 
-/* Cabeçalho da partida */
+/* Partida */
 #tela-partida {
     display: flex;
     flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
 }
 
 #tela-partida[hidden] {
@@ -179,6 +185,7 @@ button:disabled {
     justify-content: space-between;
     align-items: center;
     gap: 16px;
+    flex-shrink: 0;
 }
 
 .partida-controles {
@@ -202,8 +209,8 @@ button:disabled {
 
 /* Planisfério */
 .tabuleiro-container {
-    margin: 10px 0;
-    padding: 18px;
+    margin: 6px 0;
+    padding: 14px;
     background-color: #171717;
     border: 1px solid #303030;
     border-radius: 10px;
@@ -211,10 +218,11 @@ button:disabled {
 
 #tela-partida .tabuleiro-container {
     flex: 1;
+    min-height: 0;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    min-width: 0;
+    justify-content: space-between;
+    gap: 8px;
 }
 
 .tabuleiro-header {
@@ -222,12 +230,12 @@ button:disabled {
     justify-content: space-between;
     align-items: center;
     gap: 12px;
-    margin-bottom: 16px;
+    flex-shrink: 0;
 }
 
 .tabuleiro-header h2 {
-    font-size: 19px;
-    margin-bottom: 5px;
+    font-size: 18px;
+    margin-bottom: 4px;
 }
 
 .tabuleiro-header p {
@@ -246,19 +254,20 @@ button:disabled {
 
 .tabuleiro-scroll {
     width: 100%;
+    min-height: 0;
     overflow-x: auto;
-    padding-bottom: 6px;
+    padding-bottom: 4px;
 }
 
 .tabuleiro-geografico {
     display: grid;
-    grid-template-columns: 34px repeat(12, minmax(38px, 1fr));
+    grid-template-columns: 40px repeat(12, minmax(38px, 1fr)) 40px;
+    grid-template-rows: 24px repeat(6, minmax(38px, 1fr)) 24px;
     gap: 4px;
-    min-width: 550px;
-}
-
-#tela-partida .tabuleiro-geografico {
     width: 100%;
+    min-width: 650px;
+    height: 100%;
+    min-height: 0;
 }
 
 .celula-eixo,
@@ -266,30 +275,37 @@ button:disabled {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 32px;
+    min-height: 0;
     color: #8fa6b5;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: bold;
+    white-space: nowrap;
 }
 
 .celula-eixo {
     color: #00aaff;
 }
 
+.coordenada-borda-longitude,
+.coordenada-borda-latitude {
+    font-size: 11px;
+    white-space: nowrap;
+}
+
 .celula-tabuleiro {
-    min-height: clamp(38px, 7vh, 65px);
+    width: 100%;
+    height: 100%;
+    min-width: 0;
+    min-height: 0;
+    padding: 0;
     background-color: #18384a;
     border: 1px solid #28536b;
     border-radius: 4px;
-    cursor: pointer;
+    cursor: default;
     transition:
         background-color 0.2s,
         border-color 0.2s,
         box-shadow 0.2s;
-}
-
-.celula-tabuleiro:hover {
-    background-color: #245570;
 }
 
 .celula-tabuleiro:focus-visible {
@@ -297,13 +313,6 @@ button:disabled {
     outline-offset: 2px;
 }
 
-.celula-tabuleiro.selecionada {
-    background-color: #0077bb;
-    border-color: #75cfff;
-    box-shadow: inset 0 0 0 2px #75cfff;
-}
-
-/* Casas já respondidas */
 .celula-tabuleiro.respondida-correta {
     background-color: #176b42;
     border-color: #4ade80;
@@ -318,12 +327,11 @@ button:disabled {
     box-shadow: inset 0 0 0 1px #f87171;
 }
 
-.celula-tabuleiro.respondida-correta:hover {
-    background-color: #176b42;
-}
-
-.celula-tabuleiro.respondida-incorreta:hover {
-    background-color: #7f2525;
+.celula-tabuleiro.respondida-aproximada {
+    background-color: #80601b;
+    border-color: #facc15;
+    cursor: not-allowed;
+    box-shadow: inset 0 0 0 1px #facc15;
 }
 
 .celula-tabuleiro:disabled {
@@ -335,27 +343,29 @@ button:disabled {
     justify-content: center;
     flex-wrap: wrap;
     gap: 18px;
-    margin-top: 14px;
     color: #999;
     font-size: 11px;
+    flex-shrink: 0;
 }
 
-/* Coordenadas selecionadas */
+/* Resultado da coordenada */
 .coordenada-selecionada {
-    margin-top: 16px;
-    padding: 12px 14px;
-    min-height: 44px;
+    margin-top: 4px;
+    padding: 10px 12px;
+    min-height: 42px;
+    box-sizing: border-box;
     background-color: #1a1a1a;
     border: 1px solid #303d47;
     border-radius: 7px;
     color: #b8c8d2;
     font-size: 13px;
-    line-height: 1.6;
+    line-height: 1.5;
+    flex-shrink: 0;
 }
 
-/* Indicador e botão de encerramento */
-.btn-link {
-    align-self: flex-start;
+#btn-abrir-coordenadas {
+    width: 100%;
+    flex-shrink: 0;
 }
 
 /* Painel de sorteio */
@@ -490,11 +500,12 @@ button:disabled {
     padding: 12px 0;
 }
 
-/* Diálogo de gerenciamento */
+/* Diálogo de sorteio */
 .popup-sorteio {
     width: min(850px, calc(100vw - 40px));
     max-width: none;
     max-height: min(650px, calc(100vh - 40px));
+    box-sizing: border-box;
     margin: auto;
     padding: 28px;
     color: #eee;
@@ -504,12 +515,14 @@ button:disabled {
     box-shadow: 0 20px 70px rgba(0, 0, 0, 0.65);
 }
 
-.popup-sorteio::backdrop {
+.popup-sorteio::backdrop,
+.popup-coordenadas::backdrop {
     background: rgba(0, 0, 0, 0.78);
     backdrop-filter: blur(3px);
 }
 
-.popup-sorteio-header {
+.popup-sorteio-header,
+.popup-coordenadas-header {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -517,7 +530,8 @@ button:disabled {
     margin-bottom: 24px;
 }
 
-.popup-sorteio-header .batalha-eyebrow {
+.popup-sorteio-header .batalha-eyebrow,
+.popup-coordenadas-header .batalha-eyebrow {
     margin-bottom: 5px;
 }
 
@@ -542,7 +556,7 @@ button:disabled {
     background: #292929;
 }
 
-/* Conteúdo interno do diálogo */
+/* Gerenciamento da turma */
 .gerenciamento-layout {
     display: grid;
     grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
@@ -607,6 +621,7 @@ button:disabled {
 .popup-coordenadas {
     width: min(440px, calc(100vw - 32px));
     max-width: none;
+    box-sizing: border-box;
     margin: auto;
     padding: 26px;
     color: #eee;
@@ -614,23 +629,6 @@ button:disabled {
     border: 1px solid #303d47;
     border-radius: 12px;
     box-shadow: 0 20px 70px rgba(0, 0, 0, 0.65);
-}
-
-.popup-coordenadas::backdrop {
-    background: rgba(0, 0, 0, 0.78);
-    backdrop-filter: blur(3px);
-}
-
-.popup-coordenadas-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 16px;
-    margin-bottom: 22px;
-}
-
-.popup-coordenadas-header .batalha-eyebrow {
-    margin-bottom: 5px;
 }
 
 .popup-coordenadas-header h2 {
@@ -665,6 +663,7 @@ button:disabled {
 .campo-coordenada select {
     width: 100%;
     min-width: 0;
+    box-sizing: border-box;
     padding: 12px;
     color: white;
     background-color: #1a1a1a;
@@ -701,8 +700,8 @@ button:disabled {
     line-height: 1.4;
 }
 
-/* Responsividade */
-@media (max-width: 850px), (max-height: 650px) {
+/* Telas menores */
+@media (max-width: 850px), (max-height: 700px) {
     .batalha-content {
         height: auto;
         min-height: calc(100vh - 56px);
@@ -713,11 +712,29 @@ button:disabled {
     .batalha-card {
         height: auto;
     }
+
+    #tela-partida {
+        min-height: 0;
+        overflow: visible;
+    }
+
+    #tela-partida .tabuleiro-container {
+        flex: none;
+    }
+
+    .tabuleiro-geografico {
+        height: auto;
+        grid-template-rows: 24px repeat(6, minmax(48px, 1fr)) 24px;
+    }
+
+    .celula-tabuleiro {
+        min-height: 48px;
+    }
 }
 
 @media (max-width: 700px) {
     .batalha-card {
-        padding: 22px;
+        padding: 18px;
     }
 
     .batalha-card h1 {
@@ -775,57 +792,4 @@ button:disabled {
     .coordenadas-acoes button {
         width: 100%;
     }
-}
-
-/* Nova organização do tabuleiro: somente as coordenadas centrais */
-.tabuleiro-geografico {
-    grid-template-columns: repeat(12, minmax(38px, 1fr));
-}
-
-.celula-tabuleiro {
-    width: 100%;
-    min-width: 0;
-    padding: 6px 2px;
-    white-space: pre-line;
-    overflow-wrap: normal;
-    font-size: clamp(8px, 1vw, 12px);
-    line-height: 1.5;
-    font-variant-numeric: tabular-nums;
-}
-
-.celula-tabuleiro:disabled {
-    opacity: 1;
-}
-
-/* Tabuleiro com coordenadas nas bordas */
-.tabuleiro-geografico {
-    grid-template-columns: 48px repeat(12, minmax(38px, 1fr)) 48px;
-    min-width: 650px;
-}
-
-.coordenada-borda-longitude {
-    font-size: 11px;
-    white-space: nowrap;
-}
-
-.coordenada-borda-latitude {
-    font-size: 11px;
-    white-space: nowrap;
-}
-
-.celula-tabuleiro {
-    padding: 0;
-    font-size: 12px;
-}
-
-/* Células aproximadas */
-.celula-tabuleiro.respondida-aproximada {
-    background-color: #80601b;
-    border-color: #facc15;
-    cursor: not-allowed;
-    box-shadow: inset 0 0 0 1px #facc15;
-}
-
-.celula-tabuleiro.respondida-aproximada:hover {
-    background-color: #80601b;
 }
