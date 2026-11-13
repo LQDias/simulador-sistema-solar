@@ -73,7 +73,7 @@
     margin-bottom: 28px;
 }
 
-/* Formulário */
+/* Formulário de preparação */
 #form-preparacao {
     display: flex;
     flex-direction: column;
@@ -301,6 +301,33 @@ button:disabled {
     background-color: #0077bb;
     border-color: #75cfff;
     box-shadow: inset 0 0 0 2px #75cfff;
+}
+
+/* Casas já respondidas */
+.celula-tabuleiro.respondida-correta {
+    background-color: #176b42;
+    border-color: #4ade80;
+    cursor: not-allowed;
+    box-shadow: inset 0 0 0 1px #4ade80;
+}
+
+.celula-tabuleiro.respondida-incorreta {
+    background-color: #7f2525;
+    border-color: #f87171;
+    cursor: not-allowed;
+    box-shadow: inset 0 0 0 1px #f87171;
+}
+
+.celula-tabuleiro.respondida-correta:hover {
+    background-color: #176b42;
+}
+
+.celula-tabuleiro.respondida-incorreta:hover {
+    background-color: #7f2525;
+}
+
+.celula-tabuleiro:disabled {
+    opacity: 1;
 }
 
 .tabuleiro-orientacao {
@@ -576,6 +603,104 @@ button:disabled {
     font-size: 11px;
 }
 
+/* Diálogo de coordenadas */
+.popup-coordenadas {
+    width: min(440px, calc(100vw - 32px));
+    max-width: none;
+    margin: auto;
+    padding: 26px;
+    color: #eee;
+    background: #111;
+    border: 1px solid #303d47;
+    border-radius: 12px;
+    box-shadow: 0 20px 70px rgba(0, 0, 0, 0.65);
+}
+
+.popup-coordenadas::backdrop {
+    background: rgba(0, 0, 0, 0.78);
+    backdrop-filter: blur(3px);
+}
+
+.popup-coordenadas-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: 22px;
+}
+
+.popup-coordenadas-header .batalha-eyebrow {
+    margin-bottom: 5px;
+}
+
+.popup-coordenadas-header h2 {
+    font-size: 22px;
+}
+
+.popup-coordenadas form {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.campo-coordenada {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.campo-coordenada label {
+    color: #ddd;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.campo-coordenada-controles {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 105px;
+    gap: 10px;
+}
+
+.campo-coordenada input,
+.campo-coordenada select {
+    width: 100%;
+    min-width: 0;
+    padding: 12px;
+    color: white;
+    background-color: #1a1a1a;
+    border: 1px solid #444;
+    border-radius: 6px;
+    font-size: 15px;
+}
+
+.campo-coordenada input:focus,
+.campo-coordenada select:focus {
+    outline: none;
+    border-color: #00aaff;
+}
+
+.campo-coordenada input::placeholder {
+    color: #777;
+}
+
+.coordenadas-acoes {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 4px;
+}
+
+.coordenadas-acoes button {
+    min-width: 110px;
+}
+
+.mensagem-coordenadas {
+    min-height: 18px;
+    color: #f87171;
+    font-size: 13px;
+    line-height: 1.4;
+}
+
 /* Responsividade */
 @media (max-width: 850px), (max-height: 650px) {
     .batalha-content {
@@ -617,6 +742,10 @@ button:disabled {
         overflow-y: auto;
     }
 
+    .popup-coordenadas {
+        padding: 20px;
+    }
+
     .gerenciamento-resumo .estatisticas-turma {
         grid-template-columns: repeat(3, minmax(0, 1fr));
     }
@@ -632,4 +761,71 @@ button:disabled {
     .estatisticas-turma {
         grid-template-columns: 1fr;
     }
+}
+
+@media (max-width: 380px) {
+    .campo-coordenada-controles {
+        grid-template-columns: minmax(0, 1fr) 85px;
+    }
+
+    .coordenadas-acoes {
+        flex-direction: column-reverse;
+    }
+
+    .coordenadas-acoes button {
+        width: 100%;
+    }
+}
+
+/* Nova organização do tabuleiro: somente as coordenadas centrais */
+.tabuleiro-geografico {
+    grid-template-columns: repeat(12, minmax(38px, 1fr));
+}
+
+.celula-tabuleiro {
+    width: 100%;
+    min-width: 0;
+    padding: 6px 2px;
+    white-space: pre-line;
+    overflow-wrap: normal;
+    font-size: clamp(8px, 1vw, 12px);
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+}
+
+.celula-tabuleiro:disabled {
+    opacity: 1;
+}
+
+/* Tabuleiro com coordenadas nas bordas */
+.tabuleiro-geografico {
+    grid-template-columns: 48px repeat(12, minmax(38px, 1fr)) 48px;
+    min-width: 650px;
+}
+
+.coordenada-borda-longitude {
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.coordenada-borda-latitude {
+    font-size: 11px;
+    white-space: nowrap;
+}
+
+.celula-tabuleiro {
+    padding: 0;
+    font-size: 12px;
+}
+
+/* Células aproximadas */
+.celula-tabuleiro.respondida-aproximada {
+    background-color: #80601b;
+    border-color: #facc15;
+    cursor: not-allowed;
+    box-shadow: inset 0 0 0 1px #facc15;
+}
+
+.celula-tabuleiro.respondida-aproximada:hover {
+    background-color: #80601b;
 }

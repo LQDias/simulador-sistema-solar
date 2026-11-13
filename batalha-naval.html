@@ -93,8 +93,8 @@
             </div>
 
             <p class="batalha-description">
-                Explore o planisfério e encontre as embarcações escondidas.
                 O professor sorteia um aluno para cada missão.
+                Informe as coordenadas geográficas do ponto que deseja localizar.
             </p>
 
             <!-- Planisfério -->
@@ -102,7 +102,7 @@
                 <div class="tabuleiro-header">
                     <div>
                         <h2>Planisfério</h2>
-                        <p>Grade de localização geográfica</p>
+                        <p>As coordenadas indicam o centro de cada célula.</p>
                     </div>
 
                     <span class="tabuleiro-legenda">30° × 30°</span>
@@ -112,7 +112,7 @@
                     <div
                         id="tabuleiro-geografico"
                         class="tabuleiro-geografico"
-                        aria-label="Tabuleiro geográfico com 12 colunas e 6 linhas"
+                        aria-label="Planisfério dividido em 72 células"
                     ></div>
                 </div>
 
@@ -128,8 +128,16 @@
                     class="coordenada-selecionada"
                     aria-live="polite"
                 >
-                    Selecione uma casa do tabuleiro para consultar suas coordenadas.
+                    Informe as coordenadas para localizar uma célula.
                 </div>
+
+                <button
+                    type="button"
+                    id="btn-abrir-coordenadas"
+                    class="btn-primary"
+                >
+                    Informar coordenadas
+                </button>
             </section>
 
             <button
@@ -143,6 +151,98 @@
         </section>
 
     </main>
+
+    <!-- Janela de coordenadas -->
+    <dialog
+        id="popup-coordenadas"
+        class="popup-coordenadas"
+        aria-labelledby="titulo-popup-coordenadas"
+    >
+        <div class="popup-coordenadas-header">
+            <div>
+                <p class="batalha-eyebrow">LOCALIZAÇÃO</p>
+                <h2 id="titulo-popup-coordenadas">Informar coordenadas</h2>
+            </div>
+
+            <button
+                type="button"
+                id="btn-fechar-coordenadas"
+                class="btn-fechar-popup"
+                aria-label="Fechar formulário de coordenadas"
+            >
+                ×
+            </button>
+        </div>
+
+        <form id="form-coordenadas" novalidate>
+
+            <div class="campo-coordenada">
+                <label for="valor-latitude">Latitude</label>
+
+                <div class="campo-coordenada-controles">
+                    <input
+                        type="number"
+                        id="valor-latitude"
+                        min="0"
+                        max="90"
+                        step="1"
+                        placeholder="Ex: 75"
+                        required
+                    />
+
+                    <select id="hemisferio-latitude" required>
+                        <option value="N">Norte (N)</option>
+                        <option value="S">Sul (S)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="campo-coordenada">
+                <label for="valor-longitude">Longitude</label>
+
+                <div class="campo-coordenada-controles">
+                    <input
+                        type="number"
+                        id="valor-longitude"
+                        min="0"
+                        max="180"
+                        step="1"
+                        placeholder="Ex: 165"
+                        required
+                    />
+
+                    <select id="hemisferio-longitude" required>
+                        <option value="O">Oeste (O)</option>
+                        <option value="L">Leste (L)</option>
+                    </select>
+                </div>
+            </div>
+
+            <p
+                id="mensagem-coordenadas"
+                class="mensagem-coordenadas"
+                aria-live="polite"
+            ></p>
+
+            <div class="coordenadas-acoes">
+                <button
+                    type="button"
+                    id="btn-cancelar-coordenadas"
+                    class="btn-secondary"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="submit"
+                    class="btn-primary"
+                >
+                    Confirmar
+                </button>
+            </div>
+
+        </form>
+    </dialog>
 
     <!-- Gerenciamento da turma e sorteio -->
     <dialog
@@ -168,7 +268,6 @@
 
         <div class="gerenciamento-layout">
 
-            <!-- Área do sorteio -->
             <section class="gerenciamento-sorteio">
                 <div class="sorteio-painel">
                     <p class="sorteio-legenda">NÚMERO DA CHAMADA</p>
@@ -209,7 +308,6 @@
                 </div>
             </section>
 
-            <!-- Estatísticas e histórico -->
             <aside class="gerenciamento-resumo">
 
                 <section class="resumo-turma">

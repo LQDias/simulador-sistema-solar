@@ -25,6 +25,19 @@ const btnConfirmar = document.getElementById('btn-confirmar');
 const btnAusente = document.getElementById('btn-ausente');
 const btnVoltarConfig = document.getElementById('btn-voltar-config');
 
+// Elementos do formulário de coordenadas
+const btnAbrirCoordenadas = document.getElementById('btn-abrir-coordenadas');
+const popupCoordenadas = document.getElementById('popup-coordenadas');
+const btnFecharCoordenadas = document.getElementById('btn-fechar-coordenadas');
+const btnCancelarCoordenadas = document.getElementById('btn-cancelar-coordenadas');
+const formCoordenadas = document.getElementById('form-coordenadas');
+
+const inputLatitude = document.getElementById('valor-latitude');
+const hemisferioLatitude = document.getElementById('hemisferio-latitude');
+const inputLongitude = document.getElementById('valor-longitude');
+const hemisferioLongitude = document.getElementById('hemisferio-longitude');
+const mensagemCoordenadas = document.getElementById('mensagem-coordenadas');
+
 // Estatísticas
 const totalParticiparam = document.getElementById('total-participaram');
 const totalDisponiveis = document.getElementById('total-disponiveis');
@@ -36,6 +49,7 @@ const listaHistorico = document.getElementById('lista-historico');
 
 // Estado da partida
 let sorteio = null;
+let casasRespondidas = new Map();
 
 
 // Iniciar uma nova partida
@@ -60,6 +74,7 @@ formPreparacao.addEventListener('submit', (event) => {
     }
 
     sorteio = new SorteioTurma(quantidade);
+    casasRespondidas.clear();
 
     mensagemErro.textContent = '';
     inputQuantidade.removeAttribute('aria-invalid');
@@ -240,6 +255,197 @@ function renderizarHistorico() {
 }
 
 
+// Abrir formulário de coordenadas
+btnAbrirCoordenadas.addEventListener('click', () => {
+    mensagemCoordenadas.textContent = '';
+
+    formCoordenadas.reset();
+
+    if (!popupCoordenadas.open) {
+        popupCoordenadas.showModal();
+    }
+
+    inputLatitude.focus();
+});
+
+
+// Fechar formulário
+btnFecharCoordenadas.addEventListener('click', fecharFormularioCoordenadas);
+btnCancelarCoordenadas.addEventListener('click', fecharFormularioCoordenadas);
+
+function fecharFormularioCoordenadas() {
+    if (popupCoordenadas.open) {
+        popupCoordenadas.close();
+    }
+}
+
+
+// Impedir fechamento acidental ao clicar dentro do diálogo
+popupCoordenadas.addEventListener('click', (event) => {
+    if (event.target === popupCoordenadas) {
+        fecharFormularioCoordenadas();
+    }
+});
+
+
+// Formatar coordenadas para exibição
+function formatarLatitude(valor) {
+    if (valor === 0) {
+        return '0°';
+    }
+
+    return `${Math.abs(valor)}°${valor > 0 ? 'N' : 'S'}`;
+}
+
+function formatarLongitude(valor) {
+    if (valor === 0) {
+        return '0°';
+    }
+
+    return `${Math.abs(valor)}°${valor > 0 ? 'L' : 'O'}`;
+}
+
+
+// Localizar a célula correspondente a uma coordenada
+
+function localizarCelula(latitude, longitude) {
+    // Identifica a linha e a coluna que contêm o ponto informado.
+    // Cada célula representa uma área de 30° × 30°.
+
+    const indiceLinha = Math.min(
+        5,
+        Math.floor((90 - latitude) / 30)
+    );
+
+    const indiceColuna = Math.min(
+        11,
+        Math.floor((longitude + 180) / 30)
+    );
+
+    // Calcula o centro da célula encontrada.
+    const latitudeCentro = 75 - indiceLinha * 30;
+    const longitudeCentro = -165 + indiceColuna * 30;
+
+    const acertou =
+        latitude === latitudeCentro &&
+        longitude === longitudeCentro;
+
+    return {
+        indiceLinha,
+        indiceColuna,
+        latitudeCentro,
+        longitudeCentro,
+        acertou
+    };
+}
+
+
+// Registrar uma resposta
+formCoordenadas.addEventListener('submit', (event) => {
+    event.preventDefault();
+
+    const valorLatitude = inputLatitude.value.trim();
+    const valorLongitude = inputLongitude.value.trim();
+
+    const latitudeAbsoluta = Number(valorLatitude);
+    const longitudeAbsoluta = Number(valorLongitude);
+
+    // Verificar preenchimento e valores inteiros.
+    if (
+        valorLatitude === '' ||
+        valorLongitude === '' ||
+        !Number.isInteger(latitudeAbsoluta) ||
+        !Number.isInteger(longitudeAbsoluta)
+    ) {
+        mensagemCoordenadas.textContent =
+            'Informe valores numéricos inteiros para latitude e longitude.';
+        return;
+    }
+
+    // Verificar limites geográficos.
+    if (
+        latitudeAbsoluta < 0 ||
+        latitudeAbsoluta > 90 ||
+        longitudeAbsoluta < 0 ||
+        longitudeAbsoluta > 180
+    ) {
+        mensagemCoordenadas.textContent =
+            'Coordenada inválida. Verifique os valores informados.';
+        return;
+    }
+
+    // Converter para coordenadas com sinal.
+    const latitude =
+        hemisferioLatitude.value === 'N'
+            ? latitudeAbsoluta
+            : -latitudeAbsoluta;
+
+    const longitude =
+        hemisferioLongitude.value === 'L'
+            ? longitudeAbsoluta
+            : -longitudeAbsoluta;
+
+    const resultado = localizarCelula(latitude, longitude);
+
+    const chaveCelula =
+        `${resultado.indiceLinha}-${resultado.indiceColuna}`;
+
+    // Impedir que uma célula seja respondida novamente.
+    if (casasRespondidas.has(chaveCelula)) {
+        mensagemCoordenadas.textContent =
+            'Essa célula já foi respondida. Informe outra coordenada.';
+        return;
+    }
+
+    const celulas = tabuleiroGeografico.querySelectorAll('.celula-tabuleiro');
+
+    const indiceCelula =
+        resultado.indiceLinha * 12 + resultado.indiceColuna;
+
+    const celula = celulas[indiceCelula];
+
+    if (!celula) {
+        mensagemCoordenadas.textContent =
+            'Não foi possível localizar essa posição.';
+        return;
+    }
+
+    const centroLatitude = formatarLatitude(resultado.latitudeCentro);
+    const centroLongitude = formatarLongitude(resultado.longitudeCentro);
+
+    if (resultado.acertou) {
+        celula.classList.add('respondida-correta');
+
+        celula.setAttribute(
+            'aria-label',
+            `Centro ${centroLatitude}, ${centroLongitude}. Coordenada exata.`
+        );
+
+        coordenadaSelecionada.textContent =
+            `Coordenada exata! Célula localizada: ${centroLatitude}, ${centroLongitude}.`;
+
+        casasRespondidas.set(chaveCelula, 'correta');
+    } else {
+        celula.classList.add('respondida-aproximada');
+
+        celula.setAttribute(
+            'aria-label',
+            `Centro ${centroLatitude}, ${centroLongitude}. Coordenada aproximada.`
+        );
+
+        coordenadaSelecionada.textContent =
+            `A coordenada informada foi aproximada para o centro da célula: ${centroLatitude}, ${centroLongitude}.`;
+
+        casasRespondidas.set(chaveCelula, 'aproximada');
+    }
+
+    celula.disabled = true;
+
+    fecharFormularioCoordenadas();
+});
+
+
+
 // Encerrar a partida
 btnVoltarConfig.addEventListener('click', () => {
     const desejaEncerrar = window.confirm(
@@ -251,9 +457,14 @@ btnVoltarConfig.addEventListener('click', () => {
     }
 
     sorteio = null;
+    casasRespondidas.clear();
 
     if (popupSorteio.open) {
         popupSorteio.close();
+    }
+
+    if (popupCoordenadas.open) {
+        popupCoordenadas.close();
     }
 
     telaPartida.hidden = true;
@@ -263,129 +474,97 @@ btnVoltarConfig.addEventListener('click', () => {
 });
 
 
-// Formatar valores de latitude
-function formatarLatitude(valor) {
-    if (valor === 0) {
-        return '0°';
-    }
-
-    const hemisferio = valor > 0 ? 'N' : 'S';
-
-    return `${Math.abs(valor)}°${hemisferio}`;
-}
-
-
-// Formatar valores de longitude
-function formatarLongitude(valor) {
-    if (valor === 0) {
-        return '0°';
-    }
-
-    const hemisferio = valor > 0 ? 'L' : 'O';
-
-    return `${Math.abs(valor)}°${hemisferio}`;
-}
-
-
-// Calcular e apresentar as coordenadas de uma casa
-function selecionarCelula(celula, indiceColuna, linha) {
-    const casas = tabuleiroGeografico.querySelectorAll('.celula-tabuleiro');
-
-    casas.forEach((casa) => {
-        casa.classList.remove('selecionada');
-        casa.setAttribute('aria-pressed', 'false');
-    });
-
-    celula.classList.add('selecionada');
-    celula.setAttribute('aria-pressed', 'true');
-
-    // Cada coluna representa uma faixa de 30° de longitude.
-    const longitudeInicial = -180 + indiceColuna * 30;
-    const longitudeFinal = longitudeInicial + 30;
-    const longitudeCentro = (longitudeInicial + longitudeFinal) / 2;
-
-    // Cada linha representa uma faixa de 30° de latitude.
-    // A primeira linha começa no Polo Norte.
-    const latitudeSuperior = 90 - (linha - 1) * 30;
-    const latitudeInferior = latitudeSuperior - 30;
-    const latitudeCentro = (latitudeSuperior + latitudeInferior) / 2;
-
-    const coordenada = celula.dataset.coordenada;
-
-    const faixaLatitude = linha <= 3
-    ? `${formatarLatitude(latitudeInferior)} a ${formatarLatitude(latitudeSuperior)}`
-    : `${formatarLatitude(latitudeSuperior)} a ${formatarLatitude(latitudeInferior)}`;
-
-    coordenadaSelecionada.textContent =
-        `${coordenada} — Latitude: ${faixaLatitude}; ` +
-        `Longitude: ${formatarLongitude(longitudeInicial)} a ${formatarLongitude(longitudeFinal)}. ` +
-        `Centro aproximado: ${formatarLatitude(latitudeCentro)}, ` +
-        `${formatarLongitude(longitudeCentro)}.`;
-}
-
-
 // Construir o tabuleiro geográfico
 function construirTabuleiro() {
-    const colunas = 'ABCDEFGHIJKL';
-    const quantidadeLinhas = 6;
-
     tabuleiroGeografico.replaceChildren();
 
     coordenadaSelecionada.textContent =
-        'Selecione uma casa do tabuleiro para consultar suas coordenadas.';
+        'Informe as coordenadas para localizar uma célula.';
 
-    // Canto superior esquerdo
-    const canto = document.createElement('div');
-    canto.className = 'celula-eixo';
-    canto.textContent = '°';
+    const quantidadeLinhas = 6;
+    const quantidadeColunas = 12;
 
-    tabuleiroGeografico.appendChild(canto);
+    // Criar os rótulos de longitude da borda superior.
+    const cantoSuperior = document.createElement('div');
+    cantoSuperior.className = 'celula-eixo';
+    tabuleiroGeografico.appendChild(cantoSuperior);
 
-    // Cabeçalho das colunas
-    for (const coluna of colunas) {
-        const cabecalho = document.createElement('div');
+    for (let coluna = 0; coluna < quantidadeColunas; coluna++) {
+        const longitudeCentro = -165 + coluna * 30;
+        const rotulo = document.createElement('div');
 
-        cabecalho.className = 'celula-cabecalho';
-        cabecalho.textContent = coluna;
+        rotulo.className = 'celula-cabecalho coordenada-borda-longitude';
+        rotulo.textContent = formatarLongitude(longitudeCentro);
 
-        tabuleiroGeografico.appendChild(cabecalho);
+        tabuleiroGeografico.appendChild(rotulo);
     }
 
-    // Linhas e células
-    for (let linha = 1; linha <= quantidadeLinhas; linha++) {
-        const numeroLinha = document.createElement('div');
+    const cantoSuperiorDireito = document.createElement('div');
+    cantoSuperiorDireito.className = 'celula-eixo';
+    tabuleiroGeografico.appendChild(cantoSuperiorDireito);
 
-        numeroLinha.className = 'celula-cabecalho';
-        numeroLinha.textContent = linha;
+    // Criar as seis linhas do tabuleiro.
+    for (let linha = 0; linha < quantidadeLinhas; linha++) {
+        const latitudeCentro = 75 - linha * 30;
+        const latitudeFormatada = formatarLatitude(latitudeCentro);
 
-        tabuleiroGeografico.appendChild(numeroLinha);
+        // Latitude na borda esquerda.
+        const rotuloEsquerdo = document.createElement('div');
 
-        for (let indiceColuna = 0; indiceColuna < colunas.length; indiceColuna++) {
-            const coluna = colunas[indiceColuna];
-            const celula = document.createElement('div');
+        rotuloEsquerdo.className = 'celula-eixo coordenada-borda-latitude';
+        rotuloEsquerdo.textContent = latitudeFormatada;
 
+        tabuleiroGeografico.appendChild(rotuloEsquerdo);
+
+        // Células da linha.
+        for (let coluna = 0; coluna < quantidadeColunas; coluna++) {
+            const longitudeCentro = -165 + coluna * 30;
+
+            const celula = document.createElement('button');
+
+            celula.type = 'button';
             celula.className = 'celula-tabuleiro';
-            celula.dataset.coordenada = `${coluna}${linha}`;
-            celula.setAttribute('role', 'button');
-            celula.setAttribute('tabindex', '0');
-            celula.setAttribute('aria-pressed', 'false');
+            celula.disabled = false;
+
+            const longitudeFormatada =
+                formatarLongitude(longitudeCentro);
+
+            celula.dataset.coordenada =
+                `${latitudeFormatada}, ${longitudeFormatada}`;
+
             celula.setAttribute(
                 'aria-label',
-                `Posição ${coluna}${linha}`
+                `Célula com centro em ${latitudeFormatada}, ${longitudeFormatada}`
             );
-
-            celula.addEventListener('click', () => {
-                selecionarCelula(celula, indiceColuna, linha);
-            });
-
-            celula.addEventListener('keydown', (event) => {
-                if (event.key === 'Enter' || event.key === ' ') {
-                    event.preventDefault();
-                    selecionarCelula(celula, indiceColuna, linha);
-                }
-            });
 
             tabuleiroGeografico.appendChild(celula);
         }
+
+        // Latitude na borda direita.
+        const rotuloDireito = document.createElement('div');
+
+        rotuloDireito.className = 'celula-eixo coordenada-borda-latitude';
+        rotuloDireito.textContent = latitudeFormatada;
+
+        tabuleiroGeografico.appendChild(rotuloDireito);
     }
+
+    // Criar os rótulos de longitude da borda inferior.
+    const cantoInferior = document.createElement('div');
+    cantoInferior.className = 'celula-eixo';
+    tabuleiroGeografico.appendChild(cantoInferior);
+
+    for (let coluna = 0; coluna < quantidadeColunas; coluna++) {
+        const longitudeCentro = -165 + coluna * 30;
+        const rotulo = document.createElement('div');
+
+        rotulo.className = 'celula-cabecalho coordenada-borda-longitude';
+        rotulo.textContent = formatarLongitude(longitudeCentro);
+
+        tabuleiroGeografico.appendChild(rotulo);
+    }
+
+    const cantoInferiorDireito = document.createElement('div');
+    cantoInferiorDireito.className = 'celula-eixo';
+    tabuleiroGeografico.appendChild(cantoInferiorDireito);
 }
