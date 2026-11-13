@@ -4,6 +4,7 @@ import { SorteioTurma } from './sorteio.js';
 
 // Elementos das telas
 const tabuleiroGeografico = document.getElementById('tabuleiro-geografico');
+const coordenadaSelecionada = document.getElementById('coordenada-selecionada');
 const formPreparacao = document.getElementById('form-preparacao');
 const inputQuantidade = document.getElementById('quantidade-alunos');
 const mensagemErro = document.getElementById('mensagem-erro');
@@ -70,6 +71,9 @@ formPreparacao.addEventListener('submit', (event) => {
     mensagemSorteio.textContent = 'Sorteie um aluno para começar.';
 
     btnSortear.disabled = false;
+    btnSortear.hidden = false;
+    btnSortear.textContent = 'Sortear aluno';
+
     btnConfirmar.disabled = true;
     btnAusente.disabled = true;
 
@@ -91,7 +95,6 @@ btnAbrirSorteio.addEventListener('click', () => {
         popupSorteio.showModal();
     }
 
-    // Se não há aluno aguardando confirmação, realiza um novo sorteio.
     if (sorteio.alunoAtual === null) {
         realizarSorteio();
     }
@@ -174,14 +177,6 @@ btnAusente.addEventListener('click', () => {
 
     atualizarInterface();
 });
-
-
-// Liberar o botão para o próximo sorteio
-function liberarProximoSorteio() {
-    btnSortear.disabled = false;
-    btnConfirmar.disabled = true;
-    btnAusente.disabled = true;
-}
 
 
 // Atualizar estatísticas e histórico
@@ -267,12 +262,77 @@ btnVoltarConfig.addEventListener('click', () => {
     inputQuantidade.focus();
 });
 
+
+// Formatar valores de latitude
+function formatarLatitude(valor) {
+    if (valor === 0) {
+        return '0°';
+    }
+
+    const hemisferio = valor > 0 ? 'N' : 'S';
+
+    return `${Math.abs(valor)}°${hemisferio}`;
+}
+
+
+// Formatar valores de longitude
+function formatarLongitude(valor) {
+    if (valor === 0) {
+        return '0°';
+    }
+
+    const hemisferio = valor > 0 ? 'L' : 'O';
+
+    return `${Math.abs(valor)}°${hemisferio}`;
+}
+
+
+// Calcular e apresentar as coordenadas de uma casa
+function selecionarCelula(celula, indiceColuna, linha) {
+    const casas = tabuleiroGeografico.querySelectorAll('.celula-tabuleiro');
+
+    casas.forEach((casa) => {
+        casa.classList.remove('selecionada');
+        casa.setAttribute('aria-pressed', 'false');
+    });
+
+    celula.classList.add('selecionada');
+    celula.setAttribute('aria-pressed', 'true');
+
+    // Cada coluna representa uma faixa de 30° de longitude.
+    const longitudeInicial = -180 + indiceColuna * 30;
+    const longitudeFinal = longitudeInicial + 30;
+    const longitudeCentro = (longitudeInicial + longitudeFinal) / 2;
+
+    // Cada linha representa uma faixa de 30° de latitude.
+    // A primeira linha começa no Polo Norte.
+    const latitudeSuperior = 90 - (linha - 1) * 30;
+    const latitudeInferior = latitudeSuperior - 30;
+    const latitudeCentro = (latitudeSuperior + latitudeInferior) / 2;
+
+    const coordenada = celula.dataset.coordenada;
+
+    const faixaLatitude = linha <= 3
+    ? `${formatarLatitude(latitudeInferior)} a ${formatarLatitude(latitudeSuperior)}`
+    : `${formatarLatitude(latitudeSuperior)} a ${formatarLatitude(latitudeInferior)}`;
+
+    coordenadaSelecionada.textContent =
+        `${coordenada} — Latitude: ${faixaLatitude}; ` +
+        `Longitude: ${formatarLongitude(longitudeInicial)} a ${formatarLongitude(longitudeFinal)}. ` +
+        `Centro aproximado: ${formatarLatitude(latitudeCentro)}, ` +
+        `${formatarLongitude(longitudeCentro)}.`;
+}
+
+
 // Construir o tabuleiro geográfico
 function construirTabuleiro() {
     const colunas = 'ABCDEFGHIJKL';
     const quantidadeLinhas = 6;
 
     tabuleiroGeografico.replaceChildren();
+
+    coordenadaSelecionada.textContent =
+        'Selecione uma casa do tabuleiro para consultar suas coordenadas.';
 
     // Canto superior esquerdo
     const canto = document.createElement('div');
@@ -300,15 +360,30 @@ function construirTabuleiro() {
 
         tabuleiroGeografico.appendChild(numeroLinha);
 
-        for (const coluna of colunas) {
+        for (let indiceColuna = 0; indiceColuna < colunas.length; indiceColuna++) {
+            const coluna = colunas[indiceColuna];
             const celula = document.createElement('div');
 
             celula.className = 'celula-tabuleiro';
             celula.dataset.coordenada = `${coluna}${linha}`;
+            celula.setAttribute('role', 'button');
+            celula.setAttribute('tabindex', '0');
+            celula.setAttribute('aria-pressed', 'false');
             celula.setAttribute(
                 'aria-label',
                 `Posição ${coluna}${linha}`
             );
+
+            celula.addEventListener('click', () => {
+                selecionarCelula(celula, indiceColuna, linha);
+            });
+
+            celula.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    selecionarCelula(celula, indiceColuna, linha);
+                }
+            });
 
             tabuleiroGeografico.appendChild(celula);
         }
