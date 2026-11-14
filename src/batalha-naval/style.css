@@ -219,10 +219,6 @@ button:disabled {
 #tela-partida .tabuleiro-container {
     flex: 1;
     min-height: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    gap: 8px;
 }
 
 .tabuleiro-header {
@@ -711,7 +707,7 @@ button:disabled {
 }
 
 /* Telas menores */
-@media (max-width: 850px), (max-height: 700px) {
+@media (max-width: 850px) {
     .batalha-content {
         height: auto;
         min-height: calc(100vh - 56px);
@@ -974,4 +970,167 @@ button:disabled {
 
 .painel-dica.dica-concluida {
     border-left-color: #4ade80;
+}
+
+/* Organização em três colunas da partida */
+.partida-layout {
+    display: grid;
+    grid-template-columns: minmax(180px, 0.85fr) minmax(0, 2.5fr) minmax(170px, 0.8fr);
+    gap: 14px;
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+}
+
+.painel-lateral {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.painel-lateral-dicas {
+    justify-content: flex-start;
+}
+
+.painel-lateral-dicas .painel-dica {
+    margin: 0;
+    height: fit-content;
+}
+
+.painel-lateral-controles {
+    padding: 12px;
+    background-color: #171717;
+    border: 1px solid #303030;
+    border-radius: 10px;
+}
+
+.controles-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.controles-grupo h2 {
+    font-size: 17px;
+    margin-bottom: 4px;
+}
+
+.painel-lateral-controles button {
+    width: 100%;
+}
+
+.painel-lateral-controles .coordenada-selecionada {
+    margin-top: 0;
+    min-height: 70px;
+    overflow-wrap: anywhere;
+}
+
+.controles-secundarios {
+    margin-top: auto;
+}
+
+.controles-secundarios .ciclo-indicador {
+    display: block;
+    text-align: center;
+}
+
+.controles-secundarios .btn-link {
+    margin-top: 0;
+    padding: 10px;
+}
+
+/* O mapa ocupa o espaço central */
+.partida-layout .tabuleiro-container {
+    min-width: 0;
+    min-height: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.partida-layout .tabuleiro-scroll {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    min-height: 0;
+}
+
+.partida-layout .tabuleiro-geografico {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 2 / 1;
+}
+
+/* Telas menores: organização vertical */
+@media (max-width: 850px) {
+    .partida-layout {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "dicas"
+            "mapa"
+            "controles";
+    }
+
+    .painel-lateral-dicas {
+        grid-area: dicas;
+    }
+
+    .partida-layout .tabuleiro-container {
+        grid-area: mapa;
+    }
+
+    .painel-lateral-controles {
+        grid-area: controles;
+    }
+
+    .painel-lateral-controles {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        align-items: start;
+    }
+
+    .painel-lateral-controles .controles-secundarios {
+        margin-top: 0;
+    }
+
+    .partida-layout .tabuleiro-geografico {
+        min-width: 650px;
+    }
+}
+/* Aproveitar a largura disponível na tela */
+#tela-partida {
+    width: 100%;
+    max-width: 1760px;
+    margin-inline: auto;
+}
+
+/* Ampliar o espaço das laterais e preservar o mapa */
+.partida-layout {
+    grid-template-columns:
+        minmax(250px, 0.85fr)
+        minmax(0, 3fr)
+        minmax(230px, 0.8fr);
+
+    gap: 18px;
+    width: 100%;
+}
+
+/* Melhor distribuição do espaço vertical */
+.partida-layout .tabuleiro-container {
+    min-width: 0;
+    width: 100%;
+}
+
+.partida-layout .tabuleiro-geografico {
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 2 / 1;
+}
+
+/* O painel da partida usa praticamente toda a janela */
+.batalha-content {
+    padding-inline: clamp(16px, 2vw, 36px);
 }

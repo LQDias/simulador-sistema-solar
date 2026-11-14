@@ -76,99 +76,119 @@
                     <p class="batalha-eyebrow">MISSÃO COLETIVA</p>
                     <h1>Batalha Naval Geográfica</h1>
                 </div>
-
-                <div class="partida-controles">
-                    <span id="indicador-ciclo" class="ciclo-indicador">
-                        Ciclo 1
-                    </span>
-
-                    <button
-                        type="button"
-                        id="btn-abrir-sorteio"
-                        class="btn-primary"
-                    >
-                        Turma e sorteio
-                    </button>
-                </div>
             </div>
 
             <p class="batalha-description">
                 O professor sorteia um aluno para cada missão.
                 Informe as coordenadas geográficas do ponto que deseja localizar.
             </p>
-            <!-- Dica geográfica atual -->
-            <section
-                id="painel-dica"
-                class="painel-dica"
-                aria-live="polite"
-            >
-                <div class="dica-cabecalho">
-                    <span id="dica-categoria" class="dica-categoria">
-                        OCEANO
-                    </span>
+            
+            <!-- Área principal da partida -->
+            <div class="partida-layout">
 
-                    <span id="dica-progresso" class="dica-progresso">
-                        Dica 1 de 5
-                    </span>
-                </div>
+                <!-- Lateral esquerda: dicas -->
+                <aside class="painel-lateral painel-lateral-dicas">
+                    <section
+                        id="painel-dica"
+                        class="painel-dica"
+                        aria-live="polite"
+                    >
+                        <div class="dica-cabecalho">
+                            <span id="dica-categoria" class="dica-categoria">
+                                OCEANO
+                            </span>
 
-                <h2 id="dica-titulo">Oceano Pacífico</h2>
+                            <span id="dica-progresso" class="dica-progresso">
+                                Dica 1 de 5
+                            </span>
+                        </div>
 
-                <p id="dica-descricao"></p>
+                        <h2 id="dica-titulo">Oceano Pacífico</h2>
 
-                <p id="dica-orientacao" class="dica-orientacao"></p>
-            </section>
+                        <p id="dica-descricao"></p>
 
-            <!-- Planisfério -->
-            <section class="tabuleiro-container">
-                <div class="tabuleiro-header">
-                    <div>
-                        <h2>Planisfério</h2>
-                        <p>As coordenadas indicam o centro de cada célula.</p>
+                        <p id="dica-orientacao" class="dica-orientacao"></p>
+                    </section>
+                </aside>
+
+                <!-- Centro: planisfério -->
+                <section class="tabuleiro-container">
+
+                    <div class="tabuleiro-header">
+                        <div>
+                            <h2>Planisfério</h2>
+                            <p>As coordenadas indicam o centro de cada célula.</p>
+                        </div>
+
+                        <span class="tabuleiro-legenda">30° × 30°</span>
                     </div>
 
-                    <span class="tabuleiro-legenda">30° × 30°</span>
-                </div>
+                    <div class="tabuleiro-scroll">
+                        <div
+                            id="tabuleiro-geografico"
+                            class="tabuleiro-geografico"
+                            aria-label="Planisfério dividido em 72 células"
+                        ></div>
+                    </div>
 
-                <div class="tabuleiro-scroll">
+                    <div class="tabuleiro-orientacao">
+                        <span>↑ Norte</span>
+                        <span>↓ Sul</span>
+                        <span>← Oeste</span>
+                        <span>→ Leste</span>
+                    </div>
+
+                </section>
+
+                <!-- Lateral direita: controles -->
+                <aside class="painel-lateral painel-lateral-controles">
+
+                    <div class="controles-grupo">
+                        <h2>Controles</h2>
+
+                        <button
+                            type="button"
+                            id="btn-abrir-coordenadas"
+                            class="btn-primary"
+                        >
+                            Informar coordenadas
+                        </button>
+
+                        <button
+                            type="button"
+                            id="btn-abrir-sorteio"
+                            class="btn-secondary"
+                        >
+                            Turma e sorteio
+                        </button>
+                    </div>
+
                     <div
-                        id="tabuleiro-geografico"
-                        class="tabuleiro-geografico"
-                        aria-label="Planisfério dividido em 72 células"
-                    ></div>
-                </div>
+                        id="coordenada-selecionada"
+                        class="coordenada-selecionada"
+                        aria-live="polite"
+                    >
+                        Informe as coordenadas para localizar uma célula.
+                    </div>
 
-                <div class="tabuleiro-orientacao">
-                    <span>↑ Norte</span>
-                    <span>↓ Sul</span>
-                    <span>← Oeste</span>
-                    <span>→ Leste</span>
-                </div>
+                    <div class="controles-grupo controles-secundarios">
+                        <span id="indicador-ciclo" class="ciclo-indicador">
+                            Ciclo 1
+                        </span>
 
-                <div
-                    id="coordenada-selecionada"
-                    class="coordenada-selecionada"
-                    aria-live="polite"
-                >
-                    Informe as coordenadas para localizar uma célula.
-                </div>
+                        <button
+                            type="button"
+                            id="btn-voltar-config"
+                            class="btn-link"
+                        >
+                            Encerrar partida
+                        </button>
+                    </div>
 
-                <button
-                    type="button"
-                    id="btn-abrir-coordenadas"
-                    class="btn-primary"
-                >
-                    Informar coordenadas
-                </button>
-            </section>
+                </aside>
 
-            <button
-                type="button"
-                id="btn-voltar-config"
-                class="btn-link"
-            >
-                Encerrar partida
-            </button>
+            </div>
+
 
         </section>
 
