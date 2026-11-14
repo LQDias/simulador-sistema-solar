@@ -1,10 +1,11 @@
 import '../style.css';
 import './style.css';
-import { DICAS } from './dicas.js';
-import { REGIOES } from './regioes.js';
+// import { DICAS } from './dicas.js';
+// import { REGIOES } from './regioes.js';
 import mapaPlanisferio from './assets/planisferio-natural-earth.svg';
 import { SorteioTurma } from './sorteio.js';
 import { posicionarEmbarcacoes } from './embarcacoes.js';
+import { obterRegiaoDaCelula } from './regioes.js';
 
 // Tela de fim de jogo
 const telaFim = document.getElementById('tela-fim');
@@ -76,7 +77,7 @@ let casasRespondidas = new Map();
 let acertosPorNavio = new Map();
 let partidaFinalizada = false;
 let indiceDicaAtual = 0;
-
+let filaDicas = [];
 
 // Iniciar uma nova partida
 formPreparacao.addEventListener('submit', (event) => {
@@ -103,6 +104,10 @@ formPreparacao.addEventListener('submit', (event) => {
 
     // Gerar uma nova frota aleatória para a partida.
     frota = posicionarEmbarcacoes();
+    filaDicas = frota.map((navio) => ({
+        navioId: navio.id,
+        regioes: obterRegioesCentrais(navio)
+    }));
     
     // Exibir a distribuição da frota no console (modo de teste)
     console.group('🚢 Distribuição das embarcações');
@@ -435,16 +440,49 @@ function frotaFoiDestruida() {
     return frota.every((navio) => navioFoiAfundado(navio));
 }
 
-// Atualizar a dica geográfica atual
-function atualizarDica() {
-    let regiao = REGIOES[indiceDicaAtual];
 
-    // Avança apenas quando o navio da dica atual foi afundado.
-    // Também pula regiões cujos navios já tenham sido afundados
-    // antecipadamente.
-    while (regiao) {
+// Descobrir as regiões geográficas das células centrais do navio.
+function obterRegioesCentrais(navio) {
+    const casasOrdenadas = [...navio.casas].sort((a, b) =>
+        navio.orientacao === 'horizontal'
+            ? a.coluna - b.coluna
+            : a.linha - b.linha
+    );
+
+    const meio = (casasOrdenadas.length - 1) / 2;
+
+    // Navios ímpares possuem uma célula central.
+    // Navios pares possuem duas células centrais.
+    const indicesCentrais = Number.isInteger(meio)
+        ? [meio]
+        : [Math.floor(meio), Math.ceil(meio)];
+
+    const regioesEncontradas = indicesCentrais.map((indice) => {
+        const casa = casasOrdenadas[indice];
+
+        return obterRegiaoDaCelula(casa.linha, casa.coluna);
+    });
+
+    // Evitar repetir a mesma região quando as duas células
+    // centrais estiverem dentro dela.
+    return [
+        ...new Map(
+            regioesEncontradas
+                .filter(Boolean)
+                .map((regiao) => [regiao.id, regiao])
+        ).values()
+    ];
+}
+
+// Atualizar a dica geográfica atual.
+function atualizarDica() {
+    let dicaAtual = filaDicas[indiceDicaAtual];
+
+    // A sequência só avança quando o navio da dica atual
+    // for completamente afundado.
+    while (dicaAtual) {
         const navio = frota.find(
-            (embarcacao) => embarcacao.regiaoId === regiao.id
+            (embarcacao) => embarcacao.id === dicaAtual.navioId
         );
 
         if (!navio || !navioFoiAfundado(navio)) {
@@ -452,7 +490,7 @@ function atualizarDica() {
         }
 
         indiceDicaAtual++;
-        regiao = REGIOES[indiceDicaAtual];
+        dicaAtual = filaDicas[indiceDicaAtual];
     }
 
     const categoria = document.getElementById('dica-categoria');
@@ -462,26 +500,62 @@ function atualizarDica() {
     const orientacao = document.getElementById('dica-orientacao');
     const painel = document.getElementById('painel-dica');
 
-    if (!regiao) {
+    if (!dicaAtual) {
         categoria.textContent = 'CONCLUÍDO';
-        progresso.textContent = `${REGIOES.length} de ${REGIOES.length}`;
-        titulo.textContent = 'Todas as regiões exploradas!';
-        descricao.textContent = 'Todas as embarcações foram encontradas.';
+        progresso.textContent =
+            `${filaDicas.length} de ${filaDicas.length}`;
+
+        titulo.textContent = 'Todas as embarcações encontradas!';
+        descricao.textContent =
+            'Todas as regiões geográficas foram exploradas.';
         orientacao.textContent = 'Parabéns pela missão!';
+
         painel.classList.add('dica-concluida');
 
         return;
     }
 
-    categoria.textContent = regiao.categoria;
-    progresso.textContent = `Dica ${indiceDicaAtual + 1} de ${REGIOES.length}`;
-    titulo.textContent = regiao.nome;
-    descricao.textContent = regiao.descricao;
-    orientacao.textContent = regiao.orientacao;
+    const regioes = dicaAtual.regioes;
+
+    if (regioes.length === 0) {
+        titulo.textContent = 'Região não identificada';
+        descricao.textContent =
+            'Não foi possível identificar a região central desta embarcação.';
+        orientacao.textContent =
+            'Informe esse problema para o responsável pela atividade.';
+
+        return;
+    }
+
+    const categorias = [
+        ...new Set(regioes.map((regiao) => regiao.categoria))
+    ];
+
+    categoria.textContent = categorias.join(' / ');
+
+    progresso.textContent =
+        `Dica ${indiceDicaAtual + 1} de ${filaDicas.length}`;
+
+    if (regioes.length === 1) {
+        const regiao = regioes[0];
+
+        titulo.textContent = regiao.nome;
+        descricao.textContent = regiao.descricao;
+        orientacao.textContent = regiao.orientacao;
+    } else {
+        const nomes = regioes.map((regiao) => regiao.nome);
+
+        titulo.textContent = `Entre ${nomes.join(' e ')}`;
+
+        descricao.textContent =
+            `As células centrais desta embarcação estão em regiões geográficas diferentes: ${nomes.join(' e ')}.`;
+
+        orientacao.textContent =
+            'Considere as duas regiões indicadas ao procurar a embarcação.';
+    }
 
     painel.classList.remove('dica-concluida');
 }
-
 
 // Processar uma tentativa no tabuleiro
 function processarTentativa(resultado) {

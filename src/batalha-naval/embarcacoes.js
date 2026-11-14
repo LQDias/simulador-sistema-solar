@@ -1,5 +1,3 @@
-import { REGIOES } from './regioes.js';
-
 const LINHAS = 6;
 const COLUNAS = 12;
 
@@ -11,7 +9,6 @@ export const FROTA = [
     { id: 'pequeno-2', tamanho: 2 }
 ];
 
-// Embaralhar um array utilizando Fisher-Yates.
 function embaralhar(array) {
     const resultado = [...array];
 
@@ -25,38 +22,22 @@ function embaralhar(array) {
     return resultado;
 }
 
-// Gerar todas as posições possíveis de uma embarcação
-// dentro das células de uma região.
-function obterPosicoesPossiveis(regiao) {
-    const celulasRegiao = new Set(
-        regiao.celulas.map(
-            (casa) => `${casa.linha},${casa.coluna}`
-        )
-    );
-
+function obterPosicoesPossiveis(tamanho) {
     const posicoes = [];
-    const orientacoes = ['horizontal', 'vertical'];
 
-    for (const orientacao of orientacoes) {
+    for (const orientacao of ['horizontal', 'vertical']) {
         for (let linha = 0; linha < LINHAS; linha++) {
             for (let coluna = 0; coluna < COLUNAS; coluna++) {
                 const casas = [];
 
-                for (
-                    let i = 0;
-                    i < regiao.tamanhoNavio;
-                    i++
-                ) {
+                for (let i = 0; i < tamanho; i++) {
                     const casa = orientacao === 'horizontal'
                         ? { linha, coluna: coluna + i }
                         : { linha: linha + i, coluna };
 
                     if (
                         casa.linha >= LINHAS ||
-                        casa.coluna >= COLUNAS ||
-                        !celulasRegiao.has(
-                            `${casa.linha},${casa.coluna}`
-                        )
+                        casa.coluna >= COLUNAS
                     ) {
                         break;
                     }
@@ -64,11 +45,8 @@ function obterPosicoesPossiveis(regiao) {
                     casas.push(casa);
                 }
 
-                if (casas.length === regiao.tamanhoNavio) {
-                    posicoes.push({
-                        orientacao,
-                        casas
-                    });
+                if (casas.length === tamanho) {
+                    posicoes.push({ orientacao, casas });
                 }
             }
         }
@@ -77,7 +55,6 @@ function obterPosicoesPossiveis(regiao) {
     return embaralhar(posicoes);
 }
 
-// Validar a distribuição completa da frota.
 export function validarFrota(frota) {
     const ocupadas = new Set();
 
@@ -112,141 +89,63 @@ export function validarFrota(frota) {
             ocupadas.add(chave);
         }
 
-        const linhas = navio.casas.map((casa) => casa.linha);
-        const colunas = navio.casas.map((casa) => casa.coluna);
+        const valores = navio.orientacao === 'horizontal'
+            ? navio.casas.map((casa) => casa.linha)
+            : navio.casas.map((casa) => casa.coluna);
 
-        if (navio.orientacao === 'horizontal') {
-            if (!linhas.every((linha) => linha === linhas[0])) {
-                return false;
-            }
-
-            const ordenadas = [...colunas].sort((a, b) => a - b);
-
-            for (let i = 1; i < ordenadas.length; i++) {
-                if (ordenadas[i] !== ordenadas[i - 1] + 1) {
-                    return false;
-                }
-            }
-        }
-
-        if (navio.orientacao === 'vertical') {
-            if (!colunas.every((coluna) => coluna === colunas[0])) {
-                return false;
-            }
-
-            const ordenadas = [...linhas].sort((a, b) => a - b);
-
-            for (let i = 1; i < ordenadas.length; i++) {
-                if (ordenadas[i] !== ordenadas[i - 1] + 1) {
-                    return false;
-                }
-            }
-        }
-
-        // Verificar se todas as células pertencem à região do navio.
-        const regiao = REGIOES.find(
-            (item) => item.id === navio.regiaoId
-        );
-
-        if (!regiao) {
+        if (!valores.every((valor) => valor === valores[0])) {
             return false;
         }
 
-        const celulasRegiao = new Set(
-            regiao.celulas.map(
-                (casa) => `${casa.linha},${casa.coluna}`
-            )
-        );
+        const coordenadas = navio.orientacao === 'horizontal'
+            ? navio.casas.map((casa) => casa.coluna)
+            : navio.casas.map((casa) => casa.linha);
 
-        if (
-            !navio.casas.every((casa) =>
-                celulasRegiao.has(`${casa.linha},${casa.coluna}`)
-            )
-        ) {
-            return false;
+        const ordenadas = [...coordenadas].sort((a, b) => a - b);
+
+        for (let i = 1; i < ordenadas.length; i++) {
+            if (ordenadas[i] !== ordenadas[i - 1] + 1) {
+                return false;
+            }
         }
     }
 
     return true;
 }
 
-// Posicionar a frota aleatoriamente dentro das regiões.
 export function posicionarEmbarcacoes() {
-    const regioesEmbarcacoes = REGIOES.map((regiao) => {
-        const definicaoNavio = FROTA.find(
-            (navio) => navio.id === regiao.navioId
-        );
-
-        if (!definicaoNavio) {
-            throw new Error(
-                `Não existe embarcação cadastrada para a região ${regiao.nome}.`
-            );
-        }
-
-        if (definicaoNavio.tamanho !== regiao.tamanhoNavio) {
-            throw new Error(
-                `O tamanho da embarcação não corresponde à região ${regiao.nome}.`
-            );
-        }
-
-        return {
-            regiao,
-            definicaoNavio,
-            posicoes: obterPosicoesPossiveis(regiao)
-        };
-    });
-
-    // Priorizar regiões com menos possibilidades de posicionamento.
-    regioesEmbarcacoes.sort(
-        (a, b) => a.posicoes.length - b.posicoes.length
-    );
-
-    if (
-        regioesEmbarcacoes.some(
-            (item) => item.posicoes.length === 0
-        )
-    ) {
-        throw new Error(
-            'Uma ou mais regiões não possuem células suficientes para sua embarcação.'
-        );
-    }
+    // Navios maiores são posicionados primeiro.
+    const embarcacoes = FROTA.map((navio) => ({
+        ...navio,
+        posicoes: obterPosicoesPossiveis(navio.tamanho)
+    })).sort((a, b) => b.tamanho - a.tamanho);
 
     const frota = [];
     const ocupadas = new Set();
 
-    // Tentar montar a frota completa, voltando atrás
-    // caso alguma combinação não seja válida.
     function posicionarProxima(indice) {
-        if (indice === regioesEmbarcacoes.length) {
+        if (indice === embarcacoes.length) {
             return true;
         }
 
-        const item = regioesEmbarcacoes[indice];
+        const navio = embarcacoes[indice];
 
-        for (const posicao of item.posicoes) {
+        for (const posicao of navio.posicoes) {
             const chaves = posicao.casas.map(
                 (casa) => `${casa.linha},${casa.coluna}`
             );
 
-            const existeSobreposicao = chaves.some(
-                (chave) => ocupadas.has(chave)
-            );
-
-            if (existeSobreposicao) {
+            if (chaves.some((chave) => ocupadas.has(chave))) {
                 continue;
             }
 
             chaves.forEach((chave) => ocupadas.add(chave));
 
             frota.push({
-                id: item.definicaoNavio.id,
-                tamanho: item.definicaoNavio.tamanho,
+                id: navio.id,
+                tamanho: navio.tamanho,
                 orientacao: posicao.orientacao,
-                regiaoId: item.regiao.id,
-                regiaoNome: item.regiao.nome,
-                casas: posicao.casas.map(
-                    (casa) => ({ ...casa })
-                )
+                casas: posicao.casas.map((casa) => ({ ...casa }))
             });
 
             if (posicionarProxima(indice + 1)) {
@@ -254,7 +153,6 @@ export function posicionarEmbarcacoes() {
             }
 
             frota.pop();
-
             chaves.forEach((chave) => ocupadas.delete(chave));
         }
 
@@ -267,5 +165,9 @@ export function posicionarEmbarcacoes() {
         );
     }
 
-    return frota;
+    // Manter a ordem original da frota, independentemente da ordem
+    // utilizada pelo algoritmo para posicionar os navios.
+    return FROTA.map((definicao) =>
+        frota.find((navio) => navio.id === definicao.id)
+    );
 }
