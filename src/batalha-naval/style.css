@@ -262,11 +262,14 @@ button:disabled {
 .tabuleiro-geografico {
     display: grid;
     grid-template-columns: 40px repeat(12, minmax(38px, 1fr)) 40px;
-    grid-template-rows: 24px repeat(6, minmax(38px, 1fr)) 24px;
+    grid-template-rows: 24px repeat(6, minmax(0, 1fr)) 24px;
     gap: 4px;
+
     width: 100%;
     min-width: 650px;
-    height: 100%;
+
+    height: auto;
+    aspect-ratio: 2 / 1;
     min-height: 0;
 }
 
@@ -298,10 +301,15 @@ button:disabled {
     min-width: 0;
     min-height: 0;
     padding: 0;
-    background-color: #18384a;
-    border: 1px solid #28536b;
-    border-radius: 4px;
+
+    background-color: transparent;
+    background-repeat: no-repeat;
+
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 3px;
+
     cursor: default;
+
     transition:
         background-color 0.2s,
         border-color 0.2s,
@@ -314,14 +322,16 @@ button:disabled {
 }
 
 .celula-tabuleiro.respondida-correta {
-    background-color: #176b42;
+    background-color: rgba(23, 107, 66, 0.85);
+    background-blend-mode: multiply;
     border-color: #4ade80;
     cursor: not-allowed;
     box-shadow: inset 0 0 0 1px #4ade80;
 }
 
 .celula-tabuleiro.respondida-incorreta {
-    background-color: #7f2525;
+    background-color: rgba(127, 37, 37, 0.85);
+    background-blend-mode: multiply;
     border-color: #f87171;
     cursor: not-allowed;
     box-shadow: inset 0 0 0 1px #f87171;
@@ -724,7 +734,8 @@ button:disabled {
 
     .tabuleiro-geografico {
         height: auto;
-        grid-template-rows: 24px repeat(6, minmax(48px, 1fr)) 24px;
+        aspect-ratio: 2 / 1;
+        grid-template-rows: 24px repeat(6, minmax(0, 1fr)) 24px;
     }
 
     .celula-tabuleiro {

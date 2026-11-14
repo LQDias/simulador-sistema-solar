@@ -2,7 +2,7 @@ import '../style.css';
 import './style.css';
 import { DICAS } from './dicas.js';
 import { REGIOES } from './regioes.js';
-
+import mapaPlanisferio from './assets/planisferio-natural-earth.svg';
 import { SorteioTurma } from './sorteio.js';
 import { posicionarEmbarcacoes } from './embarcacoes.js';
 
@@ -734,6 +734,13 @@ function construirTabuleiro() {
             celula.type = 'button';
             celula.className = 'celula-tabuleiro';
             celula.disabled = false;
+            // Recortar a imagem para mostrar a região correspondente à célula.
+            celula.style.backgroundImage = `url("${mapaPlanisferio}")`;
+            celula.style.backgroundSize = '1200% 600%';
+            celula.style.backgroundPosition = `
+                ${(coluna / 11) * 100}% ${(linha / 5) * 100}%
+            `;
+            celula.style.backgroundRepeat = 'no-repeat';
 
             const longitudeFormatada =
                 formatarLongitude(longitudeCentro);
