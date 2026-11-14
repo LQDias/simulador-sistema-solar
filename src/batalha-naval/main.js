@@ -1,6 +1,7 @@
 import '../style.css';
 import './style.css';
 import { DICAS } from './dicas.js';
+import { REGIOES } from './regioes.js';
 
 import { SorteioTurma } from './sorteio.js';
 import { posicionarEmbarcacoes } from './embarcacoes.js';
@@ -120,7 +121,7 @@ formPreparacao.addEventListener('submit', (event) => {
         });
 
         console.group(
-            `${navio.id} | ${navio.tamanho} células | ${navio.orientacao}`
+            `${navio.id} | ${navio.tamanho} células | ${navio.orientacao} | Região: ${navio.regiaoNome}`
         );
 
         console.table(casas);
@@ -436,13 +437,14 @@ function frotaFoiDestruida() {
 
 // Atualizar a dica geográfica atual
 function atualizarDica() {
-    // Avançar somente quando o navio da dica atual
-    // estiver completamente afundado.
-    while (indiceDicaAtual < DICAS.length) {
-        const dica = DICAS[indiceDicaAtual];
+    let regiao = REGIOES[indiceDicaAtual];
 
+    // Avança apenas quando o navio da dica atual foi afundado.
+    // Também pula regiões cujos navios já tenham sido afundados
+    // antecipadamente.
+    while (regiao) {
         const navio = frota.find(
-            (embarcacao) => embarcacao.id === dica.navioId
+            (embarcacao) => embarcacao.regiaoId === regiao.id
         );
 
         if (!navio || !navioFoiAfundado(navio)) {
@@ -450,33 +452,34 @@ function atualizarDica() {
         }
 
         indiceDicaAtual++;
+        regiao = REGIOES[indiceDicaAtual];
     }
 
-    if (indiceDicaAtual >= DICAS.length) {
-        dicaCategoria.textContent = 'CONCLUÍDO';
-        dicaProgresso.textContent = '5 de 5 dicas';
-        dicaTitulo.textContent = 'Todas as dicas foram concluídas!';
-        dicaDescricao.textContent =
-            'A turma encontrou todas as embarcações e explorou os setores geográficos propostos.';
-        dicaOrientacao.textContent = '';
-        document.getElementById('painel-dica')
-            .classList.add('dica-concluida');
+    const categoria = document.getElementById('dica-categoria');
+    const progresso = document.getElementById('dica-progresso');
+    const titulo = document.getElementById('dica-titulo');
+    const descricao = document.getElementById('dica-descricao');
+    const orientacao = document.getElementById('dica-orientacao');
+    const painel = document.getElementById('painel-dica');
+
+    if (!regiao) {
+        categoria.textContent = 'CONCLUÍDO';
+        progresso.textContent = `${REGIOES.length} de ${REGIOES.length}`;
+        titulo.textContent = 'Todas as regiões exploradas!';
+        descricao.textContent = 'Todas as embarcações foram encontradas.';
+        orientacao.textContent = 'Parabéns pela missão!';
+        painel.classList.add('dica-concluida');
 
         return;
     }
 
-    const dica = DICAS[indiceDicaAtual];
+    categoria.textContent = regiao.categoria;
+    progresso.textContent = `Dica ${indiceDicaAtual + 1} de ${REGIOES.length}`;
+    titulo.textContent = regiao.nome;
+    descricao.textContent = regiao.descricao;
+    orientacao.textContent = regiao.orientacao;
 
-    dicaCategoria.textContent = dica.categoria;
-    dicaProgresso.textContent =
-        `Dica ${indiceDicaAtual + 1} de ${DICAS.length}`;
-
-    dicaTitulo.textContent = dica.titulo;
-    dicaDescricao.textContent = dica.descricao;
-    dicaOrientacao.textContent = dica.orientacao;
-
-    document.getElementById('painel-dica')
-        .classList.remove('dica-concluida');
+    painel.classList.remove('dica-concluida');
 }
 
 
