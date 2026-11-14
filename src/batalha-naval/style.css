@@ -1134,3 +1134,207 @@ button:disabled {
 .batalha-content {
     padding-inline: clamp(16px, 2vw, 36px);
 }
+
+/* Tela final ampliada */
+.tela-fim {
+    width: 100%;
+    max-width: 1760px;
+    margin-inline: auto;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+.tela-fim[hidden] {
+    display: none;
+}
+
+/* Três colunas */
+.resultado-layout {
+    display: grid;
+    grid-template-columns:
+        minmax(250px, 0.85fr)
+        minmax(0, 3fr)
+        minmax(230px, 0.8fr);
+
+    gap: 18px;
+    flex: 1;
+    min-height: 0;
+    align-items: stretch;
+}
+
+/* Resumo */
+.resultado-resumo {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    min-width: 0;
+}
+
+.resultado-resumo .resultado-destaque {
+    margin: 0;
+    min-height: 150px;
+    justify-content: center;
+}
+
+.resultado-estatisticas {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    margin: 0;
+}
+
+.resultado-estatisticas .estatistica {
+    padding: 14px;
+}
+
+/* Mapa */
+.resultado-planisferio {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    min-height: 0;
+    padding: 16px;
+    background: #171717;
+    border: 1px solid #303030;
+    border-radius: 10px;
+}
+
+.resultado-planisferio .tabuleiro-scroll {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    min-height: 0;
+}
+
+#tabuleiro-final {
+    width: 100%;
+    height: auto;
+    min-height: 0;
+    aspect-ratio: 2 / 1;
+}
+
+.resultado-planisferio .legenda-resultado {
+    flex-shrink: 0;
+}
+
+/* Ações */
+.resultado-acoes {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    min-width: 0;
+    padding: 14px;
+    background: #171717;
+    border: 1px solid #303030;
+    border-radius: 10px;
+}
+
+.resultado-acoes h2 {
+    font-size: 17px;
+}
+
+.resultado-acoes p {
+    color: #aaa;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.resultado-acoes button {
+    width: 100%;
+}
+
+.resultado-acoes #btn-fim-config {
+    margin-top: auto;
+}
+
+/* Telas menores */
+@media (max-width: 850px) {
+    .tela-fim {
+        overflow-y: auto;
+    }
+
+    .resultado-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .resultado-estatisticas {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .resultado-planisferio {
+        min-height: 300px;
+    }
+
+    #tabuleiro-final {
+        min-width: 650px;
+    }
+
+    .resultado-acoes #btn-fim-config {
+        margin-top: 0;
+    }
+}
+
+.batalha-card {
+    max-width: 1760px;
+}
+/* Forçar a organização da tela de resultados */
+#tela-fim .resultado-layout {
+    display: grid !important;
+
+    grid-template-columns:
+        minmax(250px, 0.85fr)
+        minmax(0, 3fr)
+        minmax(230px, 0.8fr);
+
+    grid-template-areas: "resumo mapa acoes";
+
+    gap: 18px;
+    align-items: stretch;
+}
+
+/* Estatísticas na lateral esquerda */
+#tela-fim .resultado-resumo {
+    grid-area: resumo;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    justify-content: flex-start;
+    position: static;
+}
+
+#tela-fim .resultado-estatisticas {
+    position: static;
+    display: grid;
+    grid-template-columns: 1fr;
+    width: 100%;
+    margin: 0;
+}
+
+/* Mapa central */
+#tela-fim .resultado-planisferio {
+    grid-area: mapa;
+    min-width: 0;
+}
+
+/* Ações na lateral direita */
+#tela-fim .resultado-acoes {
+    grid-area: acoes;
+    min-width: 0;
+}
+
+/* Organização vertical em telas menores */
+@media (max-width: 850px) {
+    #tela-fim .resultado-layout {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "resumo"
+            "mapa"
+            "acoes";
+    }
+
+    #tela-fim .resultado-estatisticas {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+}

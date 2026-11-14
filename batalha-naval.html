@@ -203,67 +203,86 @@
             A turma localizou todas as embarcações escondidas no planisfério.
         </p>
 
-        <div class="resultado-destaque">
-            <strong id="resultado-navios">5/5</strong>
-            <span>Embarcações encontradas</span>
-        </div>
+        <div class="resultado-layout">
 
-        <section class="resultado-estatisticas">
-            <div class="estatistica">
-                <strong id="resultado-tentativas">0</strong>
-                <span>Tentativas</span>
-            </div>
+            <!-- Lateral esquerda: resumo -->
+            <aside class="resultado-resumo">
 
-            <div class="estatistica">
-                <strong id="resultado-acertos">0</strong>
-                <span>Acertos</span>
-            </div>
+                <div class="resultado-destaque">
+                    <strong id="resultado-navios">5/5</strong>
+                    <span>Embarcações encontradas</span>
+                </div>
 
-            <div class="estatistica">
-                <strong id="resultado-erros">0</strong>
-                <span>Erros</span>
-            </div>
-        </section>
+                <section class="resultado-estatisticas">
 
-        <section class="resultado-planisferio">
-            <h2>Localização da frota</h2>
+                    <div class="estatistica">
+                        <strong id="resultado-tentativas">0</strong>
+                        <span>Tentativas</span>
+                    </div>
 
-            <p>
-                Confira a posição de todas as embarcações.
-            </p>
+                    <div class="estatistica">
+                        <strong id="resultado-acertos">0</strong>
+                        <span>Acertos</span>
+                    </div>
 
-            <div class="tabuleiro-scroll">
-                <div
-                    id="tabuleiro-final"
-                    class="tabuleiro-geografico"
-                    aria-label="Planisfério com a localização das embarcações revelada"
-                ></div>
-            </div>
+                    <div class="estatistica">
+                        <strong id="resultado-erros">0</strong>
+                        <span>Erros</span>
+                    </div>
 
-            <div class="legenda-resultado">
-                <span>
-                    <i class="legenda-navio"></i>
-                    Embarcações
-                </span>
-            </div>
-        </section>
+                </section>
 
-        <div class="acoes-fim">
-            <button
-                type="button"
-                id="btn-jogar-novamente"
-                class="btn-primary"
-            >
-                Jogar novamente
-            </button>
+            </aside>
 
-            <button
-                type="button"
-                id="btn-fim-config"
-                class="btn-secondary"
-            >
-                Voltar à configuração
-            </button>
+            <!-- Centro: mapa revelado -->
+            <section class="resultado-planisferio">
+
+                <h2>Localização da frota</h2>
+
+                <p>Confira a posição de todas as embarcações.</p>
+
+                <div class="tabuleiro-scroll">
+                    <div
+                        id="tabuleiro-final"
+                        class="tabuleiro-geografico"
+                        aria-label="Planisfério com a localização das embarcações revelada"
+                    ></div>
+                </div>
+
+                <div class="legenda-resultado">
+                    <span>
+                        <i class="legenda-navio"></i>
+                        Embarcações
+                    </span>
+                </div>
+
+            </section>
+
+            <!-- Lateral direita: ações -->
+            <aside class="resultado-acoes">
+
+                <h2>Próxima etapa</h2>
+
+                <p>A missão foi concluída. O que deseja fazer?</p>
+
+                <button
+                    type="button"
+                    id="btn-jogar-novamente"
+                    class="btn-primary"
+                >
+                    Jogar novamente
+                </button>
+
+                <button
+                    type="button"
+                    id="btn-fim-config"
+                    class="btn-secondary"
+                >
+                    Voltar à configuração
+                </button>
+
+            </aside>
+
         </div>
 
     </section>
