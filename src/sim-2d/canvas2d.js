@@ -1,3 +1,5 @@
+import { DIAS_NO_ANO, EVENTOS } from '../utils/astronomy.js';
+
 export class Simulador2D {
     constructor(containerId) {
         this.container = document.getElementById(containerId);
@@ -35,7 +37,7 @@ export class Simulador2D {
         }
 
         // Ângulo da órbita (0 no equinócio de março)
-        const anguloOrbita = ((dia - 80) / 365) * Math.PI * 2;
+        const anguloOrbita = ((dia - EVENTOS.equinocioMarco) / DIAS_NO_ANO) * Math.PI * 2;
         const inclinacaoMaxima = 23.5 * (Math.PI / 180);
         
         // No solstício de junho (PI/2), inclina o Norte para a esquerda

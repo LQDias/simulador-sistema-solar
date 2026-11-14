@@ -2,6 +2,7 @@ import './style.css';
 import { Cenario3D } from './sim-3d/scene.js';
 import { Terra3D } from './sim-3d/earth.js';
 import { Simulador2D } from './sim-2d/canvas2d.js';
+import {ANO_REFERENCIA, DIAS_NO_ANO, EVENTOS} from './utils/astronomy.js';
 
 const container3D = document.getElementById('canvas-3d-container');
 const sliderDia = document.getElementById('slider-dia');
@@ -27,24 +28,70 @@ function atualizarSimulacao(dia) {
 }
 
 function atualizarTextosInterface(dia) {
-    const dataBase = new Date(2023, 0, 1);
-    dataBase.setDate(dia + 1);
-    const opcoes = { day: 'numeric', month: 'long' };
-    txtData.innerText = dataBase.toLocaleDateString('pt-BR', opcoes);
+    const diaInteiro = Math.floor(dia);
 
-    if (dia >= 80 && dia < 172) {
-        txtNorte.innerText = "Primavera"; txtSul.innerText = "Outono";
-        txtExplicao.innerText = "O Hemisfério Norte está se inclinando gradualmente em direção ao Sol. Os dias começam a ficar mais longos por lá.";
-    } else if (dia >= 172 && dia < 264) {
-        txtNorte.innerText = "Verão"; txtSul.innerText = "Inverno";
-        txtExplicao.innerText = "Solstício de Junho. O Polo Norte está no seu ápice de inclinação para o Sol. É o dia mais longo do ano no Norte (Sol da Meia-Noite) e a noite mais longa no Sul.";
-    } else if (dia >= 264 && dia < 355) {
-        txtNorte.innerText = "Outono"; txtSul.innerText = "Primavera";
-        txtExplicao.innerText = "O Hemisfério Sul começa a receber mais luz direta. As temperaturas começam a subir abaixo da linha do Equador.";
+    const data = new Date(ANO_REFERENCIA, 0, diaInteiro + 1);
+
+    txtData.innerText = data.toLocaleDateString('pt-BR', {
+        day: 'numeric',
+        month: 'long'
+    });
+
+    let explicacao;
+
+    // Estações do Hemisfério Norte e suas correspondentes no Sul.
+    if (
+        diaInteiro >= EVENTOS.equinocioMarco &&
+        diaInteiro < EVENTOS.solsticioJunho
+    ) {
+        txtNorte.innerText = 'Primavera';
+        txtSul.innerText = 'Outono';
+
+        explicacao =
+            'Após o equinócio de março, o Hemisfério Norte passa a se inclinar progressivamente em direção ao Sol, enquanto o Hemisfério Sul se inclina para o lado oposto.';
+    } else if (
+        diaInteiro >= EVENTOS.solsticioJunho &&
+        diaInteiro < EVENTOS.equinocioSetembro
+    ) {
+        txtNorte.innerText = 'Verão';
+        txtSul.innerText = 'Inverno';
+
+        explicacao =
+            'O Hemisfério Norte permanece inclinado em direção ao Sol, recebendo maior duração de luz durante o dia. Próximo ao solstício, pode ocorrer o Sol da Meia-Noite nas regiões ao norte do Círculo Polar Ártico.';
+    } else if (
+        diaInteiro >= EVENTOS.equinocioSetembro &&
+        diaInteiro < EVENTOS.solsticioDezembro
+    ) {
+        txtNorte.innerText = 'Outono';
+        txtSul.innerText = 'Primavera';
+
+        explicacao =
+            'Após o equinócio de setembro, o Hemisfério Norte passa a se inclinar progressivamente para longe do Sol, enquanto o Hemisfério Sul se inclina em sua direção.';
     } else {
-        txtNorte.innerText = "Inverno"; txtSul.innerText = "Verão";
-        txtExplicao.innerText = "Solstício de Dezembro. O Polo Sul está totalmente voltado para o Sol. Verão escaldante no Sul com dias longos, e frio com noites longas no Norte.";
+        txtNorte.innerText = 'Inverno';
+        txtSul.innerText = 'Verão';
+
+        explicacao =
+            'O Hemisfério Sul permanece inclinado em direção ao Sol, enquanto o Hemisfério Norte fica inclinado para longe dele. Nas regiões ao sul do Círculo Polar Antártico pode ocorrer o Sol da Meia-Noite próximo ao solstício.';
     }
+
+    // Destaque dos quatro eventos astronômicos.
+    const eventosDoDia = {
+        [EVENTOS.equinocioMarco]:
+            'Equinócio de março: o Sol cruza o equador celeste em direção ao norte. Marca o início da primavera astronômica no Hemisfério Norte e do outono no Sul.',
+
+        [EVENTOS.solsticioJunho]:
+            'Solstício de junho: o Hemisfério Norte apresenta sua maior inclinação em direção ao Sol, enquanto o Hemisfério Sul apresenta sua maior inclinação para longe dele.',
+
+        [EVENTOS.equinocioSetembro]:
+            'Equinócio de setembro: o Sol cruza o equador celeste em direção ao sul. Marca o início do outono astronômico no Hemisfério Norte e da primavera no Sul.',
+
+        [EVENTOS.solsticioDezembro]:
+            'Solstício de dezembro: o Hemisfério Sul apresenta sua maior inclinação em direção ao Sol, enquanto o Hemisfério Norte apresenta sua maior inclinação para longe dele.'
+    };
+
+    txtExplicao.innerText =
+        eventosDoDia[diaInteiro] || explicacao;
 }
 
 sliderDia.addEventListener('input', (event) => {
@@ -73,7 +120,7 @@ function animate() {
     requestAnimationFrame(animate);
 
     if (estaAnimando) {
-        diaAtual = (diaAtual + 0.1) % 365;
+        diaAtual = (diaAtual + 0.1) % DIAS_NO_ANO;
         sliderDia.value = diaAtual;
         atualizarSimulacao(Math.floor(diaAtual));
     } else {

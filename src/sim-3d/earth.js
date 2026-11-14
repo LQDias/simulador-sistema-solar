@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { DIAS_NO_ANO, EVENTOS } from '../utils/astronomy.js';
 
 export class Terra3D {
     constructor(scene, orbitRadius) {
@@ -13,7 +14,7 @@ export class Terra3D {
         this.group.add(this.mesh);
 
         const axialTilt = 23.5 * (Math.PI / 180);
-        this.group.rotation.z = axialTilt;
+        this.group.rotation.x = -axialTilt;
 
         this.scene.add(this.group);
     }
@@ -23,7 +24,7 @@ export class Terra3D {
         this.mesh.rotation.y += rotationSpeed;
 
         // Translação
-        const anguloOrbita = ((dia - 80) / 365) * Math.PI * 2;
+        const anguloOrbita = ((dia - EVENTOS.equinocioMarco) / DIAS_NO_ANO) * Math.PI * 2;
         this.group.position.x = Math.cos(anguloOrbita) * this.orbitRadius;
         this.group.position.z = Math.sin(anguloOrbita) * this.orbitRadius;
     }
