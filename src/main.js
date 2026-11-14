@@ -29,7 +29,6 @@ function atualizarSimulacao(dia) {
 
 function atualizarTextosInterface(dia) {
     const diaInteiro = Math.floor(dia);
-
     const data = new Date(ANO_REFERENCIA, 0, diaInteiro + 1);
 
     txtData.innerText = data.toLocaleDateString('pt-BR', {
@@ -37,61 +36,65 @@ function atualizarTextosInterface(dia) {
         month: 'long'
     });
 
+    let estacaoNorte;
+    let estacaoSul;
     let explicacao;
 
-    // Estações do Hemisfério Norte e suas correspondentes no Sul.
-    if (
-        diaInteiro >= EVENTOS.equinocioMarco &&
-        diaInteiro < EVENTOS.solsticioJunho
-    ) {
-        txtNorte.innerText = 'Primavera';
-        txtSul.innerText = 'Outono';
-
-        explicacao =
-            'Após o equinócio de março, o Hemisfério Norte passa a se inclinar progressivamente em direção ao Sol, enquanto o Hemisfério Sul se inclina para o lado oposto.';
-    } else if (
-        diaInteiro >= EVENTOS.solsticioJunho &&
-        diaInteiro < EVENTOS.equinocioSetembro
-    ) {
-        txtNorte.innerText = 'Verão';
-        txtSul.innerText = 'Inverno';
-
-        explicacao =
-            'O Hemisfério Norte permanece inclinado em direção ao Sol, recebendo maior duração de luz durante o dia. Próximo ao solstício, pode ocorrer o Sol da Meia-Noite nas regiões ao norte do Círculo Polar Ártico.';
-    } else if (
-        diaInteiro >= EVENTOS.equinocioSetembro &&
-        diaInteiro < EVENTOS.solsticioDezembro
-    ) {
-        txtNorte.innerText = 'Outono';
-        txtSul.innerText = 'Primavera';
-
-        explicacao =
-            'Após o equinócio de setembro, o Hemisfério Norte passa a se inclinar progressivamente para longe do Sol, enquanto o Hemisfério Sul se inclina em sua direção.';
+    // Estações do ano
+    if (diaInteiro < EVENTOS.equinocioMarco) {
+        estacaoNorte = 'Inverno';
+        estacaoSul = 'Verão';
+        explicacao = 'O Hemisfério Sul está inclinado em direção ao Sol, enquanto o Hemisfério Norte está inclinado para longe dele.';
+    } else if (diaInteiro < EVENTOS.solsticioJunho) {
+        estacaoNorte = 'Primavera';
+        estacaoSul = 'Outono';
+        explicacao = 'Após o equinócio de março, o Hemisfério Norte passa a se inclinar progressivamente em direção ao Sol.';
+    } else if (diaInteiro < EVENTOS.equinocioSetembro) {
+        estacaoNorte = 'Verão';
+        estacaoSul = 'Inverno';
+        explicacao = 'O Hemisfério Norte permanece inclinado em direção ao Sol, recebendo maior duração de luz durante o dia.';
+    } else if (diaInteiro < EVENTOS.solsticioDezembro) {
+        estacaoNorte = 'Outono';
+        estacaoSul = 'Primavera';
+        explicacao = 'Após o equinócio de setembro, o Hemisfério Norte passa a se inclinar progressivamente para longe do Sol.';
     } else {
-        txtNorte.innerText = 'Inverno';
-        txtSul.innerText = 'Verão';
-
-        explicacao =
-            'O Hemisfério Sul permanece inclinado em direção ao Sol, enquanto o Hemisfério Norte fica inclinado para longe dele. Nas regiões ao sul do Círculo Polar Antártico pode ocorrer o Sol da Meia-Noite próximo ao solstício.';
+        estacaoNorte = 'Inverno';
+        estacaoSul = 'Verão';
+        explicacao = 'O Hemisfério Sul permanece inclinado em direção ao Sol, enquanto o Hemisfério Norte fica inclinado para longe dele.';
     }
 
-    // Destaque dos quatro eventos astronômicos.
-    const eventosDoDia = {
-        [EVENTOS.equinocioMarco]:
-            'Equinócio de março: o Sol cruza o equador celeste em direção ao norte. Marca o início da primavera astronômica no Hemisfério Norte e do outono no Sul.',
+    // Períodos de destaque dos eventos astronômicos
+    const periodosEventos = [
+        {
+            inicio: 68,  // 10 de março
+            fim: 88,     // 30 de março
+            texto: 'Estamos próximos ao equinócio de março. O Sol cruza o equador celeste em direção ao norte, marcando o início da primavera astronômica no Hemisfério Norte e do outono no Sul.'
+        },
+        {
+            inicio: 161, // 11 de junho
+            fim: 181,    // 1º de julho
+            texto: 'Estamos próximos ao solstício de junho. O Hemisfério Norte apresenta sua maior inclinação em direção ao Sol, recebendo os dias mais longos do ano, enquanto o Hemisfério Sul apresenta os mais curtos.'
+        },
+        {
+            inicio: 255, // 13 de setembro
+            fim: 275,    // 3 de outubro
+            texto: 'Estamos próximos ao equinócio de setembro. O Sol cruza o equador celeste em direção ao sul, marcando o início do outono astronômico no Hemisfério Norte e da primavera no Sul.'
+        },
+        {
+            inicio: 345, // 12 de dezembro
+            fim: 364,    // 31 de dezembro
+            texto: 'Estamos próximos ao solstício de dezembro. O Hemisfério Sul apresenta sua maior inclinação em direção ao Sol, recebendo os dias mais longos do ano, enquanto o Hemisfério Norte apresenta os mais curtos.'
+        }
+    ];
 
-        [EVENTOS.solsticioJunho]:
-            'Solstício de junho: o Hemisfério Norte apresenta sua maior inclinação em direção ao Sol, enquanto o Hemisfério Sul apresenta sua maior inclinação para longe dele.',
+    const eventoAtual = periodosEventos.find(evento =>
+        diaInteiro >= evento.inicio &&
+        diaInteiro <= evento.fim
+    );
 
-        [EVENTOS.equinocioSetembro]:
-            'Equinócio de setembro: o Sol cruza o equador celeste em direção ao sul. Marca o início do outono astronômico no Hemisfério Norte e da primavera no Sul.',
-
-        [EVENTOS.solsticioDezembro]:
-            'Solstício de dezembro: o Hemisfério Sul apresenta sua maior inclinação em direção ao Sol, enquanto o Hemisfério Norte apresenta sua maior inclinação para longe dele.'
-    };
-
-    txtExplicao.innerText =
-        eventosDoDia[diaInteiro] || explicacao;
+    txtNorte.innerText = estacaoNorte;
+    txtSul.innerText = estacaoSul;
+    txtExplicao.innerText = eventoAtual?.texto ?? explicacao;
 }
 
 sliderDia.addEventListener('input', (event) => {
